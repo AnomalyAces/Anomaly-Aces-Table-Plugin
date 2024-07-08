@@ -22,9 +22,10 @@ func _ready():
 		"bar":{
 			"columnId": "bar",
 			"columnName": "Bar",
+			"columnSort": true,
 			"columnType": AceTableConstants.ColumnType.BUTTON,
 			"columnImage": "res://icon.svg",
-			"columnFunc": button_pressed,
+			"columnFunc": button_pressed.bind("Test"),
 			"columnAlign": AceTableConstants.Align.CENTER
 			
 		},
@@ -46,7 +47,7 @@ func _ready():
 		},
 		{
 			"foo":"15",
-			"bar":"Press Me",
+			"bar":"Old Me",
 			"foobar": "res://icon.svg"
 		},
 		{
@@ -64,5 +65,5 @@ func _ready():
 	AceTableManager.createTable(tablePlugin, colDefs, data)
 	
 
-func button_pressed(var1: Dictionary):
+func button_pressed(var1: String):
 	print("Arg1 from Button: %s" % [var1])

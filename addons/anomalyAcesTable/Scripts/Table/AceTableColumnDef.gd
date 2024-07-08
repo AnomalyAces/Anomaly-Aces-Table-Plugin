@@ -3,12 +3,17 @@ extends Node
 const INVALID_TYPE: int = -1
 
 #Schemas
+var columnSortButtonSchema: z_schema = Z.schema({
+	"asc": Z.string().non_empty(),
+	"desc": Z.string().non_empty(),
+})
 
 var columnDefSchema: z_schema = Z.schema({
 	"columnId": Z.string().non_empty(),
 	"columnName": Z.string().non_empty(),
 	"columnType": Z.zenum(AceTableConstants.ColumnType),
 	"columnSort": Z.boolean().nullable(),
+	"columnSortButtons": Z.dictionary(columnSortButtonSchema).non_empty().nullable(),
 	"columnImage": Z.string().non_empty().nullable(),
 	"columnCallable": Z.callable().nullable(),
 	"columnAlign": Z.zenum(AceTableConstants.Align).nullable(),
@@ -19,6 +24,7 @@ var columnName: String
 var columnId: String
 var columnType: int
 var columnSort: bool = false
+var columnSortButtons: Dictionary
 var columnAlign: int
 var columnImage: String
 var columnFunc: Callable
@@ -38,6 +44,8 @@ func _init(colDef: Dictionary = {}):
 		
 		if(colDef.has("columnSort")):
 			columnSort = colDef.columnSort
+		if(colDef.has("columnSortButtons")):
+			columnSortButtons = colDef.columnSortButtons
 		if(colDef.has("columnImage") && !colDef.columnImage.is_empty()):
 			columnImage = colDef.columnImage
 		if(colDef.has("columnFunc") && colDef.columnFunc != null):

@@ -2,10 +2,11 @@ extends VBoxContainer
 #Types
 const AceTableConfig = preload("res://addons/anomalyAcesTable/Scripts/Table/AceTableConfig.gd")
 const AceTablePlugin = preload("res://addons/anomalyAcesTable/Scripts/ace_table_properties.gd")
-const Row = preload("res://addons/anomalyAcesTable/Scene/Table/Row.gd")
+const AceTableColumnDef = preload("res://addons/anomalyAcesTable/Scripts/Table/AceTableColumnDef.gd")
+const Row = preload("res://addons/anomalyAcesTable/Scene/Row/Row.gd")
 const Sorter = preload("res://addons/anomalyAcesTable/Scripts/Table/Sorter.gd")
 #Scenes
-const _row_scene = preload("res://addons/anomalyAcesTable/Scene/Table/Row.tscn")
+const _row_scene = preload("res://addons/anomalyAcesTable/Scene/Row/Row.tscn")
 const _table_scene = preload("res://addons/anomalyAcesTable/Scene/Table/Table.tscn")
 
 
@@ -69,6 +70,9 @@ func _createColumnHeaders():
 		if colDef.columnSort:
 			node_header = Button.new()
 			node_header.alignment = colDef.columnAlign
+			node_header.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+			node_header.expand_icon = true
+			node_header.add_theme_constant_override("icon_max_width", 20)
 			(node_header as Button).connect("pressed", _on_column_header_pressed_ascending.bind(node_header, colDef.columnId))
 		else:
 			node_header = Label.new()
@@ -83,12 +87,29 @@ func _createColumnHeaders():
 
 func _on_column_header_pressed_ascending(node_header, col_key):
 	_sorter.sort_row_by_column(self, col_key, AceTableConstants.ColumnSort.SORT_ASCENDING)
-
+	_update_sort_buttons(col_key, AceTableConstants.ColumnSort.SORT_ASCENDING)
+	
 	node_header.disconnect("pressed", _on_column_header_pressed_ascending)
 	node_header.connect("pressed", _on_column_header_pressed_descending.bind(node_header, col_key))
 
 func _on_column_header_pressed_descending(node_header, col_key):
 	_sorter.sort_row_by_column(self, col_key, AceTableConstants.ColumnSort.SORT_DESCENDING)
+	_update_sort_buttons(col_key, AceTableConstants.ColumnSort.SORT_DESCENDING)
 	
 	node_header.disconnect("pressed", _on_column_header_pressed_descending)
 	node_header.connect("pressed", _on_column_header_pressed_ascending.bind(node_header, col_key))
+
+func _update_sort_buttons(sort_col: String, sort_mode: AceTableConstants.ColumnSort):
+	var colDef: AceTableColumnDef = AceArrayUtil.findFirst(config.columnDefs, func(colDef:AceTableColumnDef): return colDef.columnId == sort_col)
+	for header in _headerCellContainer.get_children():
+		if header is Button:
+			if colDef.columnId == header.name:
+				match sort_mode:
+					AceTableConstants.ColumnSort.SORT_ASCENDING:
+						var resource: Resource = load(colDef.columnSortButtons.asc) if colDef.columnSortButtons else load("res://addons/anomalyAcesTable/Icons/AceTableSortAsc.svg")
+						header.set_button_icon(resource)
+					AceTableConstants.ColumnSort.SORT_DESCENDING:
+						var resource: Resource = load(colDef.columnSortButtons.desc) if colDef.columnSortButtons else load("res://addons/anomalyAcesTable/Icons/AceTableSortDesc.svg")
+						header.set_button_icon(resource)
+			else:
+				header.set_button_icon(null)

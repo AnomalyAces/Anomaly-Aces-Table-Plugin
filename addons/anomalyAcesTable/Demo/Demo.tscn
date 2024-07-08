@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://bsss813pgmfgs"]
+
+[ext_resource type="Script" path="res://addons/anomalyAcesTable/Demo/Demo.gd" id="1_u7mc1"]
+[ext_resource type="Script" path="res://addons/anomalyAcesTable/Scripts/ace_table_properties.gd" id="2_srnsb"]
+
+[node name="Demo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_u7mc1")
+
+[node name="AceTable" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_srnsb")
+header_theme = null
+header_cell_theme = null
+row_theme = null
+row_cell_theme = null
+cell_separation = 0

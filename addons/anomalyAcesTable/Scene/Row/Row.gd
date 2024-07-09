@@ -3,7 +3,7 @@ extends HBoxContainer
 const AceTableConfig = preload("res://addons/anomalyAcesTable/Scripts/Table/AceTableConfig.gd")
 const AceTablePlugin = preload("res://addons/anomalyAcesTable/Scripts/ace_table_properties.gd")
 const AceTableColumnDef = preload("res://addons/anomalyAcesTable/Scripts/Table/AceTableColumnDef.gd")
-
+const Cell = preload("res://addons/anomalyAcesTable/Scripts/Table/Cell.gd")
 
 signal pressed
 
@@ -17,22 +17,17 @@ func _init(plugin: AceTablePlugin, cfg: AceTableConfig, rowScene: HBoxContainer,
 	rowScene.add_theme_constant_override("separation", plugin.cell_separation)
 	
 	for colDef in cfg.columnDefs:
+		var cell: Cell = Cell.new()
 		match colDef.columnType:
 			AceTableConstants.ColumnType.LABEL:
 				var label: Label = _getLabelFromConfig(colDef,data)
-				#Set Cell Theme
-				label.set_theme(plugin.row_cell_theme)
-				rowScene.add_child(label)
+				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, label))
 			AceTableConstants.ColumnType.BUTTON:
 				var button: BaseButton = _getButtonFromConfig(colDef, data)
-				#Set Cell Theme
-				button.set_theme(plugin.row_cell_theme)
-				rowScene.add_child(button)
+				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, button))
 			AceTableConstants.ColumnType.TEXTURE_RECT:
 				var image = _getTextureRectFromConfig(colDef, data)
-				#Set Cell Theme
-				image.set_theme(plugin.row_cell_theme)
-				rowScene.add_child(image)
+				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, image))
 			_:
 				push_error("Column Def %s column type %s is unknown" % [colDef, colDef.columnType])
 	
@@ -48,7 +43,9 @@ func _getLabelFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Label:
 		label.text = dt[colDef.columnId]
 		label.name = colDef.columnId
 		label.size_flags_horizontal = SIZE_EXPAND_FILL
+		label.size_flags_vertical = SIZE_EXPAND_FILL
 		label.horizontal_alignment = colDef.columnAlign
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	
 	return label	
 

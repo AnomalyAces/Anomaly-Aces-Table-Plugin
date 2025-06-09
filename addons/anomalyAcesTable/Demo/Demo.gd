@@ -25,7 +25,7 @@ func _ready():
 			"columnSort": true,
 			"columnType": AceTableConstants.ColumnType.BUTTON,
 			"columnImage": "res://icon.svg",
-			"columnFunc": button_pressed.bind("Test"),
+			"columnCallable": button_pressed.bind("Test"),
 			"columnAlign": AceTableConstants.Align.CENTER
 			
 		},
@@ -39,7 +39,7 @@ func _ready():
 		},
 	}
 	
-	var data = [
+	var data: Array[Dictionary] = [
 		{
 			"foo":"12",
 			"bar":"Press Me",
@@ -61,7 +61,7 @@ func _ready():
 			"foobar": "res://icon.svg"
 		}
 	]
-	
+
 	AceTableManager.createTable(tablePlugin, colDefs, data)
 	
 

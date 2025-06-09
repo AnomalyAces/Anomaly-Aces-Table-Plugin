@@ -73,14 +73,14 @@ func _createColumnHeaders():
 		
 		if colDef.columnSort:
 			node_header = Button.new()
-			node_header.alignment = colDef.columnAlign
+			node_header.alignment = colDef.columnAlign if colDef.columnAlign != -1 else AceTableConstants.Align.CENTER
 			node_header.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			node_header.expand_icon = true
 			node_header.add_theme_constant_override("icon_max_width", 20)
 			(node_header as Button).connect("pressed", _on_column_header_pressed_ascending.bind(node_header, colDef.columnId))
 		else:
 			node_header = Label.new()
-			node_header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			node_header.horizontal_alignment = colDef.columnAlign if colDef.columnAlign != -1 else AceTableConstants.Align.CENTER
 			node_header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		
 		node_header.text = colDef.columnName

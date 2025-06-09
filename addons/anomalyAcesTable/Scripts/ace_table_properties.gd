@@ -49,6 +49,7 @@ func _get_property_list():
 		},
 	]
 
+
 func _to_string():
 	var headerTheme: String = null if header_theme == null else header_theme.resource_path
 	var headerCellTheme: String = null if header_cell_theme == null else header_cell_theme.resource_path

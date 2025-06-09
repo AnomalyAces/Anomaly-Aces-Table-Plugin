@@ -2,9 +2,9 @@ extends Node
 
 #Schemas
 var columnNodeDefSchema: z_schema = Z.schema({
-	"label": Z.label().nullable(),
-	"button": Z.base_button().nullable(),
-	"textureRect": Z.texture_rect().nullable()
+	"label": Z.custom().type(Label).nullable(),
+	"button": Z.custom().type(BaseButton).nullable(),
+	"textureRect": Z.custom().type(TextureRect).nullable()
 })
 
 var label: Label

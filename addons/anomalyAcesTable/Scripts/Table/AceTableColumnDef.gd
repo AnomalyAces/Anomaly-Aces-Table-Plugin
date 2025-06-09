@@ -2,6 +2,8 @@ extends Node
 
 const INVALID_TYPE: int = -1
 
+var _validationErrors: PackedStringArray = []
+
 #Schemas
 var columnSortButtonSchema: z_schema = Z.schema({
 	"asc": Z.string().non_empty(),
@@ -17,7 +19,7 @@ var columnDefSchema: z_schema = Z.schema({
 	"columnImage": Z.string().non_empty().nullable(),
 	"columnCallable": Z.callable().nullable(),
 	"columnAlign": Z.zenum(AceTableConstants.Align).nullable(),
-	"columnNode": Z.union([Z.label(), Z.base_button(), Z.texture_rect()]).nullable()
+	"columnNode": Z.union([Z.custom().type(Label), Z.custom().type(BaseButton), Z.custom().type(TextureRect)]).nullable()
 })
 
 var columnName: String
@@ -25,9 +27,9 @@ var columnId: String
 var columnType: int
 var columnSort: bool = false
 var columnSortButtons: Dictionary
-var columnAlign: int
+var columnAlign: int = -1
 var columnImage: String
-var columnFunc: Callable
+var columnCallable: Callable
 var columnNode: Control
 
 #constructor
@@ -48,8 +50,8 @@ func _init(colDef: Dictionary = {}):
 			columnSortButtons = colDef.columnSortButtons
 		if(colDef.has("columnImage") && !colDef.columnImage.is_empty()):
 			columnImage = colDef.columnImage
-		if(colDef.has("columnFunc") && colDef.columnFunc != null):
-			columnFunc = colDef.columnFunc
+		if(colDef.has("columnCallable") && colDef.columnCallable != null):
+			columnCallable = colDef.columnCallable
 		if(colDef.has("columnAlign")):
 			columnAlign = colDef.columnAlign
 		else:
@@ -61,19 +63,27 @@ func _init(colDef: Dictionary = {}):
 	else:
 		columnType = INVALID_TYPE
 		push_error("Column Def Error: %s " % [val_res.error])
+		
+	#Gather validation Errors
+	_validationErrors = is_valid()
 
 #Check if the columDef is valid
-func isValid() -> bool:
-	var isValid: bool = true
+func is_valid() -> PackedStringArray:
+	var warnings: PackedStringArray = []
 	if(columnId.is_empty()):
-		isValid = false
+		warnings.append("Column Id is empty")
 	if(columnName.is_empty()):
-		isValid = false
+		warnings.append("[%s]: Column Name is empty" % columnId)
 	if(columnType < 0):
-		isValid = false
-	if(columnType == AceTableConstants.ColumnType.BUTTON && columnFunc == null):
-		isValid = false
-	return isValid
+		warnings.append("Column Definition Input invalid")
+	if(columnType == AceTableConstants.ColumnType.BUTTON && columnCallable.is_null()):
+		warnings.append("[%s]: Column Type is Button but no Callable has been given" % columnId)
+	
+	return warnings
+
+func print_errors():
+	for error in _validationErrors:
+		push_error("AceTableError - "+error)
 
 #Check if the columDef input is valid
 func _isValidColDef(colDef: Dictionary) -> ZodotResult:

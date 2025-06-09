@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://bsss813pgmfgs"]
 
-[ext_resource type="Script" path="res://addons/anomalyAcesTable/Demo/Demo.gd" id="1_u7mc1"]
-[ext_resource type="Script" path="res://addons/anomalyAcesTable/Scripts/ace_table_properties.gd" id="2_srnsb"]
+[ext_resource type="Script" uid="uid://dx5omv4v1wnur" path="res://addons/anomalyAcesTable/Demo/Demo.gd" id="1_u7mc1"]
+[ext_resource type="Script" uid="uid://cgh2swh3i02r2" path="res://addons/anomalyAcesTable/Scripts/ace_table_properties.gd" id="2_srnsb"]
 [ext_resource type="Theme" uid="uid://7bv7l77w7kgq" path="res://addons/anomalyAcesTable/Demo/Theme/BorderTheme/BorderHeaderTheme.tres" id="3_g5ldi"]
 [ext_resource type="Theme" uid="uid://balr4wqyocu4s" path="res://addons/anomalyAcesTable/Demo/Theme/BorderTheme/BorderHeaderCellTheme.tres" id="4_eqksw"]
 [ext_resource type="Theme" uid="uid://6j52qpigihcu" path="res://addons/anomalyAcesTable/Demo/Theme/BorderTheme/BorderRowTheme.tres" id="5_dvcxc"]

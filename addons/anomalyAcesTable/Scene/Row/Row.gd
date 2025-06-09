@@ -44,7 +44,7 @@ func _getLabelFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Label:
 		label.name = colDef.columnId
 		label.size_flags_horizontal = SIZE_EXPAND_FILL
 		label.size_flags_vertical = SIZE_EXPAND_FILL
-		label.horizontal_alignment = colDef.columnAlign
+		label.horizontal_alignment = colDef.columnAlign if colDef.columnAlign != -1 else AceTableConstants.Align.CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	
 	return label	
@@ -61,8 +61,8 @@ func _getButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> BaseButt
 		button.text = dt[colDef.columnId]
 		button.name = colDef.columnId
 		button.size_flags_horizontal = SIZE_EXPAND_FILL
-		button.alignment = colDef.columnAlign
-		button.connect("pressed", _on_Button_pressed.bind(colDef.columnFunc))
+		button.alignment = colDef.columnAlign if colDef.columnAlign != -1 else AceTableConstants.Align.CENTER
+		button.connect("pressed", _on_Button_pressed.bind(colDef))
 		if(!colDef.columnImage.is_empty()):
 			button.set_button_icon(load(colDef.columnImage))
 		
@@ -81,6 +81,9 @@ func _getTextureRectFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Tex
 		textureRect.set_texture(load(dt[colDef.columnId]))
 	return textureRect
 
-func _on_Button_pressed(callable: Callable):
-	callable.call()
-	pressed.emit()
+func _on_Button_pressed(colDef: AceTableColumnDef):
+	if !colDef.columnCallable.is_null():
+		colDef.columnCallable.call()
+		pressed.emit()
+	else:
+		push_warning("AceTableWarning - Column [%s]: button was pressed but its Callable is null. Check column definition and errors in logs" % [colDef.columnId])

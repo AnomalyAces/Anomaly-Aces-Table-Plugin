@@ -12,6 +12,7 @@ border_width_bottom = 2
 
 [resource]
 Button/styles/normal = SubResource("StyleBoxFlat_vfeqw")
+Label/font_sizes/font_size = 40
 MarginContainer/constants/margin_bottom = 4
 MarginContainer/constants/margin_left = 4
 MarginContainer/constants/margin_right = 4

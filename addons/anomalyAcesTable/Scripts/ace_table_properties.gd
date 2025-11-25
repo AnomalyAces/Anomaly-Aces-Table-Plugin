@@ -1,5 +1,5 @@
 @tool
-extends Node
+class_name AceTable extends Control
 
 var header_theme: Theme
 var header_cell_theme: Theme
@@ -8,7 +8,7 @@ var row_cell_theme: Theme
 var cell_separation: int
 
 func _print(args):
-	print(args)
+	AceLog.printLog([args])
 
 func _get_property_list():
 	return [
@@ -50,15 +50,15 @@ func _get_property_list():
 	]
 
 
-func _to_string():
+func printConfig():
 	var headerTheme: String = null if header_theme == null else header_theme.resource_path
 	var headerCellTheme: String = null if header_cell_theme == null else header_cell_theme.resource_path
 	var rowTheme: String = null if row_theme == null else row_theme.resource_path
 	var rowCellTheme: String = null if row_cell_theme == null else row_cell_theme.resource_path
 	var cellSeparation: int = cell_separation
-	
-	return "header_theme: %s \n" + \
-			"header_cell_theme: %s \n" + \
-			"row_theme: %s \n" + \
-			"row_cell_theme: %s \n" + \
-			"cell_separation: %d \n"  % [headerTheme, headerCellTheme, rowTheme, rowCellTheme, cellSeparation]
+
+	AceLog.printLog(["header theme: %s" % headerTheme])
+	AceLog.printLog(["header cell theme: %s" % headerCellTheme])
+	AceLog.printLog(["row theme: %s" % rowTheme])
+	AceLog.printLog(["row cell theme: %s" % rowCellTheme])
+	AceLog.printLog(["cell separation: %s" % cellSeparation])

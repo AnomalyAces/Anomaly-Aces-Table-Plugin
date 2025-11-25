@@ -1,6 +1,8 @@
-extends Node
+@tool
+class_name AceTableConstants extends Node
 
 enum ColumnType {
+	NONE,
 	LABEL,
 	BUTTON, 
 	TEXTURE_RECT
@@ -17,4 +19,9 @@ enum Align {
 	CENTER,
 	RIGHT,
 	FILL
+}
+
+enum ImageAlign {
+	LEFT,
+	RIGHT,
 }

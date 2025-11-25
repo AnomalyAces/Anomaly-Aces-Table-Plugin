@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://c20kn61e6mfcw"]
+
+[node name="Table" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="HeaderPanel"]
+layout_mode = 2
+
+[node name="HeaderCellContainer" type="HBoxContainer" parent="HeaderPanel/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RowPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 8.0
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="RowPanel"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="RowPanel/MarginContainer"]
+layout_mode = 2
+vertical_scroll_mode = 3
+
+[node name="RowContainer" type="VBoxContainer" parent="RowPanel/MarginContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

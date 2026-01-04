@@ -26,8 +26,11 @@ func _init(plugin: AceTable, cfg: _AceTableConfig, rowScene: HBoxContainer, dt: 
 			AceTableConstants.ColumnType.TEXTURE_RECT:
 				var image = _getTextureRectFromConfig(colDef, data)
 				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, image))
+			AceTableConstants.ColumnType.SELECTION:
+				var checkBox = _getSelectionButtonFromConfig(colDef, data)
+				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, checkBox))
 			_:
-				AceLog.printLog(["Column Def %s column type %s is unknown" % [colDef, colDef.columnType]], AceLog.LOG_LEVEL.ERROR)
+				AceLog.printLog(["Column Def %s column type %s is unknown" % [colDef, AceTableConstants.ColumnType.keys()[colDef.columnType]]], AceLog.LOG_LEVEL.ERROR)
 	
 	
 func _getLabelFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Label:
@@ -42,7 +45,7 @@ func _getLabelFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Label:
 		label.name = colDef.columnId
 		label.size_flags_horizontal = SIZE_EXPAND_FILL
 		label.size_flags_vertical = SIZE_EXPAND_FILL
-		label.horizontal_alignment = int(colDef.columnAlign) if colDef.columnAlign != -1 else int(AceTableConstants.Align.CENTER)
+		label.horizontal_alignment = int(colDef.columnAlign) as HorizontalAlignment if colDef.columnAlign != -1 else int(AceTableConstants.Align.CENTER) as HorizontalAlignment
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	
 	return label	
@@ -59,8 +62,8 @@ func _getButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> BaseButt
 		button._button_text = dt[colDef.columnId]
 		button.name = colDef.columnId
 		button.size_flags_horizontal = SIZE_EXPAND_FILL
-		button._button_text_alignment = int(colDef.columnAlign) if colDef.columnAlign != -1 else int(AceTableConstants.Align.CENTER)
-		button.connect("pressed", _on_Button_pressed.bind(colDef, dt))
+		button._button_text_alignment = int(colDef.columnAlign) as AceTableConstants.Align if colDef.columnAlign != -1 else int(AceTableConstants.Align.CENTER) as AceTableConstants.Align
+		button.pressed.connect(_on_Button_pressed.bind(colDef, dt))
 		if(!colDef.columnImage.is_empty()):
 			button._button_icon_size = colDef.columnImageSize
 			button._button_icon = load(colDef.columnImage)
@@ -81,9 +84,30 @@ func _getTextureRectFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Tex
 		textureRect.set_texture(load(dt[colDef.columnId]))
 	return textureRect
 
+func _getSelectionButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> CheckBox:
+	var checkBox: CheckBox
+	if(colDef.columnNode != null):
+		checkBox = colDef.columnNode.duplicate()
+		checkBox.name = colDef.columnId
+	else:
+		checkBox = CheckBox.new()
+		checkBox.name = colDef.columnId
+		# checkBox.size_flags_horizontal = SIZE_EXPAND_FILL
+		checkBox.alignment = int(colDef.columnAlign) as HorizontalAlignment if colDef.columnAlign != -1 else int(AceTableConstants.Align.CENTER) as HorizontalAlignment
+		checkBox.pressed.connect(_on_CheckBox_toggled.bind(colDef, dt))
+		checkBox.button_pressed = false
+	return checkBox
+
 func _on_Button_pressed(colDef: AceTableColumnDef, dt: Dictionary):
 	if !colDef.columnCallable.is_null():
 		colDef.columnCallable.call(colDef, dt)
 		pressed.emit()
 	else:
 		AceLog.printLog(["AceTableWarning - Column [%s]: button was pressed but its Callable is null. Check column definition and errors in logs" % [colDef.columnId]], AceLog.LOG_LEVEL.WARN)
+
+func _on_CheckBox_toggled(colDef: AceTableColumnDef, dt: Dictionary):
+	if !colDef.columnCallable.is_null():
+		colDef.columnCallable.call(colDef, dt)
+		pressed.emit()
+	else:
+		AceLog.printLog(["AceTableWarning - Column [%s]: checkbox was toggled but its Callable is null. Check column definition and errors in logs" % [colDef.columnId]], AceLog.LOG_LEVEL.WARN)

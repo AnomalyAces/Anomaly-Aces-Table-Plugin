@@ -45,22 +45,35 @@ func _ready() -> void:
 	left_button_icon.texture = _button_icon
 	left_button_icon.size = _button_icon_size
 	left_button_text.text = _button_text
-	left_button_text.horizontal_alignment = int(_button_text_alignment)
+	left_button_text.horizontal_alignment = int(_button_text_alignment) as HorizontalAlignment
 
 	right_button_icon.texture = _button_icon
 	right_button_icon.size = _button_icon_size
 	right_button_text.text = _button_text
-	right_button_text.horizontal_alignment = int(_button_text_alignment)
+	right_button_text.horizontal_alignment = int(_button_text_alignment) as HorizontalAlignment
 
 	left_container.visible = !is_right_icon
 	right_container.visible = is_right_icon
 
 
-func set_disabled(value: bool):
-	# Call the parent's setter to ensure the disabled state is actually applied
-	super.set_disabled(value)
+var _prev_disabled: bool = false
 
-	if value == true:
+func _enter_tree() -> void:
+	_prev_disabled = disabled
+	if _prev_disabled:
+		_set_disabled_colors()
+	else:
+		_set_normal_colors()
+	set_process(true)
+
+func _process(_delta: float) -> void:
+	_update_disabled_state()
+
+func _update_disabled_state():
+	if disabled == _prev_disabled:
+		return
+	_prev_disabled = disabled
+	if disabled:
 		_set_disabled_colors()
 	else:
 		_set_normal_colors()

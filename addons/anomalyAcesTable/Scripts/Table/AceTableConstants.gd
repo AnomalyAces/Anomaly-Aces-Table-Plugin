@@ -5,7 +5,8 @@ enum ColumnType {
 	NONE,
 	LABEL,
 	BUTTON, 
-	TEXTURE_RECT
+	TEXTURE_RECT,
+	SELECTION
 }
 
 enum ColumnSort {

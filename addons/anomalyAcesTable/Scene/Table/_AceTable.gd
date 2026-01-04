@@ -105,7 +105,7 @@ func _on_column_header_pressed_descending(node_header, col_key):
 	node_header.connect("pressed", _on_column_header_pressed_ascending.bind(node_header, col_key))
 
 func _update_sort_buttons(sort_col: String, sort_mode: AceTableConstants.ColumnSort):
-	var colDef: AceTableColumnDef = AceArrayUtil.findFirst(config.columnDefs, func(colDef:AceTableColumnDef): return colDef.columnId == sort_col)
+	var colDef: AceTableColumnDef = AceArrayUtil.findFirst(config.columnDefs, func(cDef:AceTableColumnDef): return cDef.columnId == sort_col)
 	for header in _headerCellContainer.get_children():
 		var header_node = header.get_node("%sMC/%s" % [header.name.replace("PC", ""), header.name.replace("PC", "")])
 		if header_node is _AceTableButton:

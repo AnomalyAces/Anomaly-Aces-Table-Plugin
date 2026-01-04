@@ -84,13 +84,13 @@ func _getTextureRectFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Tex
 		textureRect.set_texture(load(dt[colDef.columnId]))
 	return textureRect
 
-func _getSelectionButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> CheckBox:
-	var checkBox: CheckBox
+func _getSelectionButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> CheckButton:
+	var checkBox: CheckButton
 	if(colDef.columnNode != null):
 		checkBox = colDef.columnNode.duplicate()
 		checkBox.name = colDef.columnId
 	else:
-		checkBox = CheckBox.new()
+		checkBox = CheckButton.new()
 		checkBox.name = colDef.columnId
 		# checkBox.size_flags_horizontal = SIZE_EXPAND_FILL
 		checkBox.alignment = int(colDef.columnAlign) as HorizontalAlignment if colDef.columnAlign != -1 else int(AceTableConstants.Align.CENTER) as HorizontalAlignment

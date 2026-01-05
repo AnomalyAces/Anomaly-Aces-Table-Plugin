@@ -59,16 +59,9 @@ func _getButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> BaseButt
 		button.text = dt[colDef.columnId]
 	else:
 		button = _ace_table_button_scene.instantiate()
-		button._button_text = dt[colDef.columnId]
-		button.name = colDef.columnId
-		button.size_flags_horizontal = SIZE_EXPAND_FILL
-		button._button_text_alignment = int(colDef.columnAlign) as AceTableConstants.Align if colDef.columnAlign != -1 else int(AceTableConstants.Align.CENTER) as AceTableConstants.Align
-		button.pressed.connect(_on_Button_pressed.bind(colDef, dt))
-		if(!colDef.columnImage.is_empty()):
-			button._button_icon_size = colDef.columnImageSize
-			button._button_icon = load(colDef.columnImage)
-		button.is_right_icon = colDef.columnImageAlign == AceTableConstants.ImageAlign.RIGHT
-		
+		button.colDef = colDef
+		button.data = dt
+
 	return button
 
 func _getTextureRectFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> TextureRect:
@@ -98,12 +91,6 @@ func _getSelectionButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) ->
 		checkBox.button_pressed = false
 	return checkBox
 
-func _on_Button_pressed(colDef: AceTableColumnDef, dt: Dictionary):
-	if !colDef.columnCallable.is_null():
-		colDef.columnCallable.call(colDef, dt)
-		pressed.emit()
-	else:
-		AceLog.printLog(["AceTableWarning - Column [%s]: button was pressed but its Callable is null. Check column definition and errors in logs" % [colDef.columnId]], AceLog.LOG_LEVEL.WARN)
 
 func _on_CheckBox_toggled(colDef: AceTableColumnDef, dt: Dictionary):
 	if !colDef.columnCallable.is_null():

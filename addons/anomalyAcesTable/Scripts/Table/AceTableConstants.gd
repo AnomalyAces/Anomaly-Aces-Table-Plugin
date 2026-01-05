@@ -26,3 +26,11 @@ enum ImageAlign {
 	LEFT,
 	RIGHT,
 }
+
+enum ButtonType {
+	ICON,
+	TEXT,
+	CHECKBOX,
+	COMBO,
+	HEADER
+}

@@ -69,13 +69,14 @@ func _createColumnHeaders():
 		
 		if colDef.columnSort:
 			node_header = _ace_table_button_scene.instantiate()
-			node_header._button_text = colDef.columnName
-			node_header.name = colDef.columnName
-			node_header._button_text_alignment = AceTableConstants.Align.CENTER
+			AceLog.printLog(["Processing button settings for ColDef [%s]" % [colDef]], AceLog.LOG_LEVEL.DEBUG)
+			node_header.colDef = colDef.clone()
+			node_header.colDef.columnButtonType = AceTableConstants.ButtonType.HEADER
+			# node_header._button_text_alignment = AceTableConstants.Align.CENTER
 			# node_header.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			# node_header.expand_icon = true
 			# node_header.add_theme_constant_override("icon_max_width", 20)
-			(node_header as Button).connect("pressed", _on_column_header_pressed_ascending.bind(node_header, colDef.columnId))
+			(node_header as Button).pressed.connect(_on_column_header_pressed_ascending.bind(node_header, colDef.columnId))
 		else:
 			node_header = Label.new()
 			node_header.horizontal_alignment = AceTableConstants.Align.CENTER
@@ -113,12 +114,12 @@ func _update_sort_buttons(sort_col: String, sort_mode: AceTableConstants.ColumnS
 				match sort_mode:
 					AceTableConstants.ColumnSort.SORT_ASCENDING:
 						var resource: Resource = load(colDef.columnSortButton.ascending) if colDef.columnSortButton else load("res://addons/anomalyAcesTable/Icons/AceTableSortAsc.svg")
-						header_node.right_button_icon.texture = resource
+						header_node.texture_rect.texture = resource
 						header_node.is_right_icon = true
 						# header_node.set_button_icon(resource)
 					AceTableConstants.ColumnSort.SORT_DESCENDING:
 						var resource: Resource = load(colDef.columnSortButton.descending) if colDef.columnSortButton else load("res://addons/anomalyAcesTable/Icons/AceTableSortDesc.svg")
-						header_node.right_button_icon.texture = resource
+						header_node.texture_rect.texture = resource
 						header_node.is_right_icon = true
 						# header_node.set_button_icon(resource)
 			else:

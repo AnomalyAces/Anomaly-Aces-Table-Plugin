@@ -1,73 +1,87 @@
 @tool
 class_name _AceTableButton extends Button
 
-var _button_icon: Texture2D
-var _button_icon_size: Vector2i
-var _button_text: String
-var _button_text_alignment: AceTableConstants.Align
 
-var left_container: HBoxContainer
-var left_button_icon: TextureRect
-var left_button_text: Label
 
-var right_container: HBoxContainer
-var right_button_icon: TextureRect
-var right_button_text: Label
+var container: HBoxContainer
+var texture_rect: TextureRect
+var label: Label
+var text_alignment: AceTableConstants.Align
+var colDef: AceTableColumnDef
+var data: Dictionary
+var type: AceTableConstants.ButtonType = AceTableConstants.ButtonType.COMBO:
+	set(b_type):
+		type = b_type
+		match type:
+			AceTableConstants.ButtonType.ICON:
+				label.visible = false
+				texture_rect.visible = true
+			AceTableConstants.ButtonType.TEXT:
+				texture_rect.visible = false
+				label.visible = true
+			AceTableConstants.ButtonType.CHECKBOX:
+				texture_rect.visible = true
+				label.visible = false
+			AceTableConstants.ButtonType.COMBO:
+				texture_rect.visible = true
+				label.visible = true
+			AceTableConstants.ButtonType.HEADER:
+				texture_rect.visible = true
+				label.visible = true
 
 var is_right_icon: bool = false:
 	set(is_right):
 		is_right_icon = is_right
-		if left_container:
-			left_container.visible = !is_right_icon
-		if right_container:
-			right_container.visible = is_right_icon
+		if texture_rect != null:
+			if is_right_icon:
+				container.move_child(texture_rect, 1)
+			else:
+				container.move_child(texture_rect, 0)
 
-
-
-
-
-func _init() -> void:
-	left_button_icon = TextureRect.new()
-	left_button_text = Label.new()
-
-	right_button_icon = TextureRect.new()
-	right_button_text =Label.new()
 
 func _ready() -> void:
-	left_container = $MarginContainer/IconLeft
-	left_button_icon = $MarginContainer/IconLeft/TextureRect
-	left_button_text = $MarginContainer/IconLeft/Label
+	container = $MarginContainer/ButtonContainer
+	texture_rect = $MarginContainer/ButtonContainer/TextureRect
+	label = $MarginContainer/ButtonContainer/Label
 
-	right_container = $MarginContainer/IconRight
-	right_button_icon = $MarginContainer/IconRight/TextureRect
-	right_button_text = $MarginContainer/IconRight/Label
-	
-	left_button_icon.texture = _button_icon
-	left_button_icon.size = _button_icon_size
-	left_button_text.text = _button_text
-	left_button_text.horizontal_alignment = int(_button_text_alignment) as HorizontalAlignment
-
-	right_button_icon.texture = _button_icon
-	right_button_icon.size = _button_icon_size
-	right_button_text.text = _button_text
-	right_button_text.horizontal_alignment = int(_button_text_alignment) as HorizontalAlignment
-
-	left_container.visible = !is_right_icon
-	right_container.visible = is_right_icon
+	_apply_button_settings()
 
 
 var _prev_disabled: bool = false
 
 func _enter_tree() -> void:
 	_prev_disabled = disabled
-	if _prev_disabled:
-		_set_disabled_colors()
-	else:
-		_set_normal_colors()
 	set_process(true)
 
 func _process(_delta: float) -> void:
 	_update_disabled_state()
+
+
+func _apply_button_settings():
+
+	AceLog.printLog(["_AceTableButton: Applying button settings for ColDef [%s]" % [colDef]], AceLog.LOG_LEVEL.DEBUG)
+
+	name = colDef.columnId
+
+	label.horizontal_alignment = int(colDef.columnAlign) as HorizontalAlignment
+
+	size_flags_horizontal = SIZE_EXPAND_FILL
+	type = colDef.columnButtonType
+	is_right_icon = colDef.columnImageAlign == AceTableConstants.ImageAlign.RIGHT
+
+	if(type != AceTableConstants.ButtonType.HEADER && !colDef.columnImage.is_empty()):
+		texture_rect.texture = load(colDef.columnImage)
+		texture_rect.size = colDef.columnImageSize
+	
+	if colDef.columnButtonType == AceTableConstants.ButtonType.HEADER:
+		label.text = colDef.columnName
+		is_right_icon = true
+	else:
+		label.text = data[colDef.columnId]
+		is_right_icon = colDef.columnImageAlign == AceTableConstants.ImageAlign.RIGHT
+		if !pressed.is_connected(_on_pressed):
+			pressed.connect(_on_pressed)
+	
 
 func _update_disabled_state():
 	if disabled == _prev_disabled:
@@ -86,28 +100,19 @@ func _set_normal_colors():
 	if disabled:
 		return
 
-	left_button_text.add_theme_color_override("font_color", get_theme_color("font_color", "Button"))
-	right_button_text.add_theme_color_override("font_color", get_theme_color("font_color", "Button"))
-
-	_update_shader(left_button_icon,  get_theme_color("font_color", "Button"))
-	_update_shader(right_button_icon,  get_theme_color("font_color", "Button"))
+	label.add_theme_color_override("font_color", get_theme_color("font_color", "Button"))
+	_update_shader(texture_rect,  get_theme_color("font_color", "Button"))
 
 func _set_disabled_colors():
-	left_button_text.add_theme_color_override("font_color", get_theme_color("font_disabled_color", "Button"))
-	right_button_text.add_theme_color_override("font_color", get_theme_color("font_disabled_color", "Button"))
-
-	_update_shader(left_button_icon,  get_theme_color("font_disabled_color", "Button"))
-	_update_shader(right_button_icon,  get_theme_color("font_disabled_color", "Button"))
+	label.add_theme_color_override("font_color", get_theme_color("font_disabled_color", "Button"))
+	_update_shader(texture_rect,  get_theme_color("font_disabled_color", "Button"))
 
 func _set_active_colors():
 	if disabled:
-			return
+		return
 
-	left_button_text.add_theme_color_override("font_color", get_theme_color("font_pressed_color", "Button"))
-	right_button_text.add_theme_color_override("font_color", get_theme_color("font_pressed_color", "Button"))
-
-	_update_shader(left_button_icon,  get_theme_color("font_pressed_color", "Button"))
-	_update_shader(right_button_icon,  get_theme_color("font_pressed_color", "Button"))
+	label.add_theme_color_override("font_color", get_theme_color("font_pressed_color", "Button"))
+	_update_shader(texture_rect,  get_theme_color("font_pressed_color", "Button"))
 
 
 func _on_button_up() -> void:
@@ -116,6 +121,11 @@ func _on_button_up() -> void:
 
 func _on_pressed() -> void:
 	_set_active_colors()
+	
+	if !colDef.columnCallable.is_null():
+		colDef.columnCallable.call(colDef, data)
+	else:
+		AceLog.printLog(["AceTableWarning - Column [%s]: button was pressed but its Callable is null. Check column definition and errors in logs" % [colDef.columnId]], AceLog.LOG_LEVEL.WARN)
 
 
 func _on_icon_right_mouse_exited() -> void:

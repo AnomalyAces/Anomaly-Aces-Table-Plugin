@@ -24,6 +24,7 @@ var columnImageSize: Vector2i = Vector2i(32,32)
 var columnImageAlign:AceTableConstants.ImageAlign = AceTableConstants.ImageAlign.LEFT
 var columnCallable: Callable
 var columnNode: Control
+var columnButtonType: AceTableConstants.ButtonType = AceTableConstants.ButtonType.COMBO
 
 
 #Check if the columDef is valid
@@ -47,6 +48,23 @@ func is_valid() -> bool:
 func print_errors():
 	for error in _validationErrors:
 		AceLog.printLog(["AceTableError - "+error], AceLog.LOG_LEVEL.ERROR)
+
+
+func clone() -> AceTableColumnDef:
+	var newColDef: AceTableColumnDef = AceTableColumnDef.new()
+	newColDef.columnName = columnName
+	newColDef.columnId = columnId
+	newColDef.columnType = columnType
+	newColDef.columnSort = columnSort
+	newColDef.columnAlign = columnAlign
+	newColDef.columnImage = columnImage
+	newColDef.columnImageSize = columnImageSize
+	newColDef.columnImageAlign = columnImageAlign
+	newColDef.columnCallable = columnCallable
+	newColDef.columnNode = columnNode
+	newColDef.columnButtonType = columnButtonType
+	newColDef.columnSortButton = columnSortButton
+	return newColDef
 
 func _isValidNode() -> bool:
 	match columnType:
@@ -73,6 +91,7 @@ func _to_string() -> String:
 		"columnImageSize": columnImageSize,
 		"columnImageAlign": AceTableConstants.ImageAlign.keys()[columnImageAlign],
 		"columnCallable": str(columnCallable),
-		"columnNode": str(columnNode)
+		"columnNode": str(columnNode),
+		"columnButtonType": AceTableConstants.ButtonType.keys()[columnButtonType]
 	}
 	return JSON.stringify(dict)

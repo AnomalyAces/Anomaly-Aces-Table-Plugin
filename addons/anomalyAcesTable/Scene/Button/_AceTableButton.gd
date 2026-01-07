@@ -101,18 +101,17 @@ func _set_normal_colors():
 		return
 
 	label.add_theme_color_override("font_color", get_theme_color("font_color", "Button"))
-	_update_shader(texture_rect,  get_theme_color("font_color", "Button"))
+	_update_shader(texture_rect,  get_theme_color("icon_normal_color", "Button"))
 
 func _set_disabled_colors():
 	label.add_theme_color_override("font_color", get_theme_color("font_disabled_color", "Button"))
-	_update_shader(texture_rect,  get_theme_color("font_disabled_color", "Button"))
-
+	_update_shader(texture_rect,  get_theme_color("icon_disabled_color", "Button"))
 func _set_active_colors():
 	if disabled:
 		return
 
 	label.add_theme_color_override("font_color", get_theme_color("font_pressed_color", "Button"))
-	_update_shader(texture_rect,  get_theme_color("font_pressed_color", "Button"))
+	_update_shader(texture_rect,  get_theme_color("icon_pressed_color", "Button"))
 
 
 func _on_button_up() -> void:

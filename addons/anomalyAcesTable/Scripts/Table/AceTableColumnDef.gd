@@ -11,6 +11,14 @@ class ColumnSortButton:
 		ascending = asc
 		descending = desc
 
+class ColumnCheckBox:
+	var checked: String
+	var unchecked: String
+
+	func _init(chkd: String, unchkd: String) -> void:
+		checked = chkd
+		unchecked = unchkd
+
 var _validationErrors: PackedStringArray = []
 
 var columnName: String
@@ -25,6 +33,7 @@ var columnImageAlign:AceTableConstants.ImageAlign = AceTableConstants.ImageAlign
 var columnCallable: Callable
 var columnNode: Control
 var columnButtonType: AceTableConstants.ButtonType = AceTableConstants.ButtonType.COMBO
+var columnCheckBox: ColumnCheckBox
 
 
 #Check if the columDef is valid
@@ -64,6 +73,7 @@ func clone() -> AceTableColumnDef:
 	newColDef.columnNode = columnNode
 	newColDef.columnButtonType = columnButtonType
 	newColDef.columnSortButton = columnSortButton
+	newColDef.columnCheckBox = columnCheckBox
 	return newColDef
 
 func _isValidNode() -> bool:

@@ -102,6 +102,14 @@ func _to_string() -> String:
 		"columnImageAlign": AceTableConstants.ImageAlign.keys()[columnImageAlign],
 		"columnCallable": str(columnCallable),
 		"columnNode": str(columnNode),
-		"columnButtonType": AceTableConstants.ButtonType.keys()[columnButtonType]
+		"columnButtonType": AceTableConstants.ButtonType.keys()[columnButtonType],
+		"columnSortButton": {
+			"ascending": columnSortButton.ascending,
+			"descending": columnSortButton.descending
+		} if columnSortButton != null else null,
+		"columnCheckBox": {
+			"checked": columnCheckBox.checked,
+			"unchecked": columnCheckBox.unchecked
+		} if columnCheckBox != null else null
 	}
 	return JSON.stringify(dict)

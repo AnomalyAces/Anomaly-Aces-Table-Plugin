@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://c20kn61e6mfcw"]
+[gd_scene load_steps=0 format=3 uid="uid://bknye5jjt4kkw"]
 
 [node name="Table" type="VBoxContainer"]
 anchors_preset = 15

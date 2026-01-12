@@ -1,3 +1,3 @@
-[gd_scene format=3 uid="uid://cb33bdktldh52"]
+[gd_scene load_steps=0 format=3 uid="uid://cb33bdktldh52"]
 
 [node name="AceTableButtonCheckbox" type="Button"]

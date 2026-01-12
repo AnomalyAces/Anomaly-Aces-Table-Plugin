@@ -11,6 +11,7 @@ func _ready() -> void:
 	_apply_button_settings()
 
 
+
 func _enter_tree() -> void:
 	_prev_disabled = disabled
 	set_process(true)
@@ -38,6 +39,11 @@ func _update_disabled_state():
 func _update_shader(color: Color):
 	set_instance_shader_parameter("instance_color", color)
 
+func _update_textures():
+	texture_normal = load(colDef.columnCheckBox.unchecked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTable.svg")
+	texture_pressed = load(data[colDef.columnId + "_pressed"])
+	texture_hover = load(data[colDef.columnId + "_hover"])
+	texture_disabled = load(data[colDef.columnId + "_disabled"])
 func _set_normal_colors():
 
 	if disabled:

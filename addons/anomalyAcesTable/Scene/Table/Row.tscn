@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://5eoybwwmk442"]
+[gd_scene load_steps=2 format=3 uid="uid://dslo7iyq366ie"]
 
 [sub_resource type="GDScript" id="GDScript_s3yfn"]
 script/source = "extends HBoxContainer

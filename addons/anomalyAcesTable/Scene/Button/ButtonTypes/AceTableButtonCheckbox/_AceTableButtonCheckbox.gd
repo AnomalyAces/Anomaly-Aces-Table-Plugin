@@ -1,6 +1,8 @@
 @tool
 class_name _AceTableButtonCheckbox extends TextureButton
 
+signal data_selected(colDef: AceTableColumnDef, data: Dictionary)
+
 var colDef: AceTableColumnDef
 var data: Dictionary
 
@@ -21,9 +23,15 @@ func _process(_delta: float) -> void:
 
 func _apply_button_settings():
 	AceLog.printLog(["_AceTableButtonCheckbox: Applying button settings for ColDef [%s]" % [colDef]], AceLog.LOG_LEVEL.DEBUG)
+
+	if colDef == null:
+		return
+
 	name = colDef.columnId
 	size_flags_horizontal = SIZE_EXPAND_FILL
+	custom_minimum_size = colDef.columnImageSize
 	toggled.connect(_on_toggled)
+	_update_textures()
 
 
 func _update_disabled_state():
@@ -40,10 +48,11 @@ func _update_shader(color: Color):
 	set_instance_shader_parameter("instance_color", color)
 
 func _update_textures():
-	texture_normal = load(colDef.columnCheckBox.unchecked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTable.svg")
-	texture_pressed = load(data[colDef.columnId + "_pressed"])
-	texture_hover = load(data[colDef.columnId + "_hover"])
-	texture_disabled = load(data[colDef.columnId + "_disabled"])
+	texture_normal = load(colDef.columnCheckBox.unchecked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
+	texture_pressed = load(colDef.columnCheckBox.checked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxChecked.svg")
+	texture_hover = load(colDef.columnCheckBox.checked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxChecked.svg")
+	texture_disabled = load(colDef.columnCheckBox.unchecked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
+
 func _set_normal_colors():
 
 	if disabled:
@@ -66,5 +75,6 @@ func _on_toggled(is_toggled: bool) -> void:
 		_set_active_colors()
 	else:
 		_set_normal_colors()
-
 	
+	data_selected.emit(colDef, data)
+	AceLog.printLog(["Data Selected From Table -  data: %s" % [data]], AceLog.LOG_LEVEL.DEBUG)

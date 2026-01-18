@@ -61,6 +61,9 @@ func _apply_button_settings():
 
 	AceLog.printLog(["_AceTableButton: Applying button settings for ColDef [%s]" % [colDef]], AceLog.LOG_LEVEL.DEBUG)
 
+	if colDef == null:
+		return
+
 	name = colDef.columnId
 
 	label.horizontal_alignment = int(colDef.columnAlign) as HorizontalAlignment
@@ -71,7 +74,7 @@ func _apply_button_settings():
 
 	if(type != AceTableConstants.ButtonType.HEADER && !colDef.columnImage.is_empty()):
 		texture_rect.texture = load(colDef.columnImage)
-		texture_rect.size = colDef.columnImageSize
+		texture_rect.custom_minimum_size = colDef.columnImageSize
 	
 	if colDef.columnButtonType == AceTableConstants.ButtonType.HEADER:
 		label.text = colDef.columnName

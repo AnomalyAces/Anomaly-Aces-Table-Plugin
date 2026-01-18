@@ -16,4 +16,7 @@ offset_right = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
+toggle_mode = true
+ignore_texture_size = true
+stretch_mode = 5
 script = ExtResource("1_i1yul")

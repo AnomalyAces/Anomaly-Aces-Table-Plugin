@@ -2,6 +2,7 @@
 class_name _AceTableRow extends HBoxContainer
 
 const _ace_table_button_scene = preload("res://addons/anomalyAcesTable/Scene/Button/_AceTableButton.tscn")
+const _ace_table_checkbox_button_scene = preload("res://addons/anomalyAcesTable/Scene/Button/ButtonTypes/AceTableButtonCheckbox/_AceTableButtonCheckbox.tscn")
 
 signal pressed
 
@@ -72,7 +73,9 @@ func _getTextureRectFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Tex
 	else:
 		textureRect = TextureRect.new()
 		textureRect.name = colDef.columnId
+		textureRect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		textureRect.size_flags_horizontal = SIZE_EXPAND_FILL
+		textureRect.custom_minimum_size = colDef.columnImageSize
 		textureRect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		textureRect.set_texture(load(dt[colDef.columnId]))
 	return textureRect
@@ -83,18 +86,7 @@ func _getSelectionButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) ->
 		checkBox = colDef.columnNode.duplicate()
 		checkBox.name = colDef.columnId
 	else:
-		checkBox = _AceTableButtonCheckbox.new()
-		checkBox.name = colDef.columnId
-		# checkBox.size_flags_horizontal = SIZE_EXPAND_FILL
-		checkBox.alignment = int(colDef.columnAlign) as HorizontalAlignment if colDef.columnAlign != -1 else int(AceTableConstants.Align.CENTER) as HorizontalAlignment
-		checkBox.pressed.connect(_on_CheckBox_toggled.bind(colDef, dt))
-		checkBox.button_pressed = false
+		checkBox = _ace_table_checkbox_button_scene.instantiate()
+		checkBox.colDef = colDef
+		checkBox.data = dt
 	return checkBox
-
-
-func _on_CheckBox_toggled(colDef: AceTableColumnDef, dt: Dictionary):
-	if !colDef.columnCallable.is_null():
-		colDef.columnCallable.call(colDef, dt)
-		pressed.emit()
-	else:
-		AceLog.printLog(["AceTableWarning - Column [%s]: checkbox was toggled but its Callable is null. Check column definition and errors in logs" % [colDef.columnId]], AceLog.LOG_LEVEL.WARN)

@@ -5,6 +5,9 @@ class_name _AceTable extends VBoxContainer
 const _row_scene = preload("res://addons/anomalyAcesTable/Scene/Row/_AceTableRow.tscn")
 const _table_scene = preload("res://addons/anomalyAcesTable/Scene/Table/_AceTable.tscn")
 const _ace_table_button_scene = preload("res://addons/anomalyAcesTable/Scene/Button/_AceTableButton.tscn")
+const _default_sort_asc_icon = preload("res://addons/anomalyAcesTable/Icons/AceTableSortAsc.svg")
+const _default_sort_desc_icon = preload("res://addons/anomalyAcesTable/Icons/AceTableSortDesc.svg")
+
 
 
 #Table Parts

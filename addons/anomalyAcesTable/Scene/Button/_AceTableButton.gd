@@ -85,6 +85,8 @@ func _apply_button_settings():
 		if !pressed.is_connected(_on_pressed):
 			pressed.connect(_on_pressed)
 	
+	_set_normal_colors()
+	
 
 func _update_disabled_state():
 	if disabled == _prev_disabled:
@@ -96,7 +98,8 @@ func _update_disabled_state():
 		_set_normal_colors()
 
 func _update_shader(textureRect: TextureRect, color: Color):
-	textureRect.set_instance_shader_parameter("instance_color", color)
+	if colDef.columnButtonIconUpdateWithState:
+		textureRect.set_instance_shader_parameter("instance_color", color)
 
 func _set_normal_colors():
 
@@ -130,32 +133,17 @@ func _on_pressed() -> void:
 		AceLog.printLog(["AceTableWarning - Column [%s]: button was pressed but its Callable is null. Check column definition and errors in logs" % [colDef.columnId]], AceLog.LOG_LEVEL.WARN)
 
 
-func _on_icon_right_mouse_exited() -> void:
+func _on_mouse_exited() -> void:
 	_set_normal_colors()
 
 
-func _on_icon_right_mouse_entered() -> void:
+func _on_mouse_entered() -> void:
 	_set_active_colors()
 
 
-func _on_icon_right_focus_exited() -> void:
+func _on_focus_exited() -> void:
 	_set_normal_colors()
 
 
-func _on_icon_right_focus_entered() -> void:
-	_set_active_colors()
-
-
-func _on_icon_left_focus_exited() -> void:
-	_set_normal_colors()
-
-
-func _on_icon_left_focus_entered() -> void:
-	_set_active_colors()
-
-
-func _on_icon_left_mouse_exited() -> void:
-	_set_normal_colors()
-
-func _on_icon_left_mouse_entered() -> void:
+func _on_focus_entered() -> void:
 	_set_active_colors()

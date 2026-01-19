@@ -4,20 +4,20 @@ class_name AceTableColumnDef extends Node
 const INVALID_TYPE: int = -1
 
 class ColumnSortButton:
-	var ascending: String
-	var descending: String
+	var ascending: Resource
+	var descending: Resource
 
 	func _init(asc: String, desc: String) -> void:
-		ascending = asc
-		descending = desc
+		ascending = load(asc)
+		descending = load(desc)
 
 class ColumnCheckBox:
-	var checked: String
-	var unchecked: String
+	var checked: Resource
+	var unchecked: Resource
 
 	func _init(chkd: String, unchkd: String) -> void:
-		checked = chkd
-		unchecked = unchkd
+		checked = load(chkd)
+		unchecked = load(unchkd)
 
 var _validationErrors: PackedStringArray = []
 
@@ -33,6 +33,7 @@ var columnImageAlign:AceTableConstants.ImageAlign = AceTableConstants.ImageAlign
 var columnCallable: Callable
 var columnNode: Control
 var columnButtonType: AceTableConstants.ButtonType = AceTableConstants.ButtonType.COMBO
+var columnButtonIconUpdateWithState: bool = false
 var columnCheckBox: ColumnCheckBox
 
 
@@ -103,6 +104,7 @@ func _to_string() -> String:
 		"columnCallable": str(columnCallable),
 		"columnNode": str(columnNode),
 		"columnButtonType": AceTableConstants.ButtonType.keys()[columnButtonType],
+		"columnButtonIconUpdateWithState": columnButtonIconUpdateWithState,
 		"columnSortButton": {
 			"ascending": columnSortButton.ascending,
 			"descending": columnSortButton.descending

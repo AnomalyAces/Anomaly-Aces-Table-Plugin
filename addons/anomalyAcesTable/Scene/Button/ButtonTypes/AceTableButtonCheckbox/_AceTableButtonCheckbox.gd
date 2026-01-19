@@ -32,6 +32,7 @@ func _apply_button_settings():
 	custom_minimum_size = colDef.columnImageSize
 	toggled.connect(_on_toggled)
 	_update_textures()
+	_set_normal_colors()
 
 
 func _update_disabled_state():
@@ -51,6 +52,7 @@ func _update_textures():
 	texture_normal = load(colDef.columnCheckBox.unchecked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
 	texture_pressed = load(colDef.columnCheckBox.checked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxChecked.svg")
 	texture_hover = load(colDef.columnCheckBox.checked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxChecked.svg")
+	texture_focused = load(colDef.columnCheckBox.checked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
 	texture_disabled = load(colDef.columnCheckBox.unchecked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
 
 func _set_normal_colors():
@@ -76,5 +78,30 @@ func _on_toggled(is_toggled: bool) -> void:
 	else:
 		_set_normal_colors()
 	
+	data[colDef.columnId] = is_toggled
 	data_selected.emit(colDef, data)
 	AceLog.printLog(["Data Selected From Table -  data: %s" % [data]], AceLog.LOG_LEVEL.DEBUG)
+
+
+func _on_mouse_exited() -> void:
+	if button_pressed:
+		return
+	_set_normal_colors()
+
+
+func _on_mouse_entered() -> void:
+	if button_pressed:
+		return
+	_set_active_colors()
+
+
+func _on_focus_exited() -> void:
+	if button_pressed:
+		return
+	_set_normal_colors()
+
+
+func _on_focus_entered() -> void:
+	if button_pressed:
+		return
+	_set_active_colors()

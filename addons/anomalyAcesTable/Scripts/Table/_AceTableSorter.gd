@@ -4,16 +4,12 @@ class_name _AceTableSorter extends Node
 var inner_column_name : String
 
 func sort_row_by_column(table: _AceTable, column_name: String, sorting_type):
-	### Check ###
-	if sorting_type == AceTableConstants.ColumnSort.NONE:
-			AceLog.printLog(["Sorting called but filter method is None"], AceLog.LOG_LEVEL.WARN)
-			return
 	
 	### Init sorting and get data ###
 	inner_column_name = column_name
 	
 
-	var rows_data: Array[Dictionary] = table.get_rows()
+	var rows_data: Array[Dictionary] = table.get_sorted_rows()
 	
 	
 	#for row in rows_data:
@@ -26,6 +22,10 @@ func sort_row_by_column(table: _AceTable, column_name: String, sorting_type):
 		
 		AceTableConstants.ColumnSort.SORT_DESCENDING:
 			rows_data.sort_custom(_sort_descending)
+
+		AceTableConstants.ColumnSort.NONE:
+			#No sorting
+			rows_data = table.get_rows()
 			
 	### Sort rows ###
 	var rows_parent: Node = table._rowContainer
@@ -35,18 +35,8 @@ func sort_row_by_column(table: _AceTable, column_name: String, sorting_type):
 		rows_parent.remove_child(n)
 	
 	#Set the table data again
-	table.set_data(rows_data)
+	table._set_sorted_data(rows_data)
 	
-	#Add Children back now that sort has happened
-	#for i in range(rows_data.size()):
-		#var row = rows_data_to_row[rows_data[i][inner_column_name]].node
-		#rows_parent.add_child(row)
-	
-	
-	
-	#for i in range(rows_data.size()):
-		#var row = rows_data_to_row[rows_data[i]].node
-		#rows_parent.move_child(row, i)
 		
 
 

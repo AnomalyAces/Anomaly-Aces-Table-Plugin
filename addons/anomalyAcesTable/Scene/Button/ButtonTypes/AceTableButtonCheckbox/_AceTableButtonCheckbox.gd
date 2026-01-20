@@ -1,7 +1,12 @@
 @tool
 class_name _AceTableButtonCheckbox extends TextureButton
 
+#Scenes and Resources
+const _default_checkbox_checked: Resource = preload("res://addons/anomalyAcesTable/Icons/AceTableCheckboxChecked.svg")
+const _default_checkbox_unchecked: Resource = preload("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
+
 signal data_selected(colDef: AceTableColumnDef, data: Dictionary)
+signal header_data_selected(colDef: AceTableColumnDef)
 
 var colDef: AceTableColumnDef
 var data: Dictionary
@@ -29,7 +34,7 @@ func _apply_button_settings():
 
 	name = colDef.columnId
 	size_flags_horizontal = SIZE_EXPAND_FILL
-	custom_minimum_size = colDef.columnImageSize
+	custom_minimum_size = colDef.columnImageSize if colDef.columnImageSize else Vector2i(64,64)
 	toggled.connect(_on_toggled)
 	_update_textures()
 	_set_normal_colors()
@@ -49,12 +54,11 @@ func _update_shader(color: Color):
 	set_instance_shader_parameter("instance_color", color)
 
 func _update_textures():
-	texture_normal = load(colDef.columnCheckBox.unchecked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
-	texture_pressed = load(colDef.columnCheckBox.checked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxChecked.svg")
-	texture_hover = load(colDef.columnCheckBox.checked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxChecked.svg")
-	texture_focused = load(colDef.columnCheckBox.checked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
-	texture_disabled = load(colDef.columnCheckBox.unchecked) if colDef.columnCheckBox else load("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
-
+	texture_normal = colDef.columnCheckBox.unchecked if colDef.columnCheckBox else _default_checkbox_unchecked
+	texture_pressed = colDef.columnCheckBox.checked if colDef.columnCheckBox else _default_checkbox_checked
+	texture_hover = colDef.columnCheckBox.checked if colDef.columnCheckBox else _default_checkbox_checked
+	texture_focused = colDef.columnCheckBox.checked if colDef.columnCheckBox else _default_checkbox_unchecked
+	texture_disabled = colDef.columnCheckBox.unchecked if colDef.columnCheckBox else _default_checkbox_unchecked
 func _set_normal_colors():
 
 	if disabled:
@@ -78,9 +82,14 @@ func _on_toggled(is_toggled: bool) -> void:
 	else:
 		_set_normal_colors()
 	
+
 	data[colDef.columnId] = is_toggled
-	data_selected.emit(colDef, data)
-	AceLog.printLog(["Data Selected From Table -  data: %s" % [data]], AceLog.LOG_LEVEL.DEBUG)
+	if colDef.columnButtonType == AceTableConstants.ButtonType.HEADER:
+		header_data_selected.emit(colDef)
+		AceLog.printLog(["Header Data Selected From Table -  ColDef: %s" % [colDef]], AceLog.LOG_LEVEL.DEBUG)
+	else:
+		data_selected.emit(colDef, data)
+		AceLog.printLog(["Data Selected From Table -  data: %s" % [data]], AceLog.LOG_LEVEL.DEBUG)
 
 
 func _on_mouse_exited() -> void:

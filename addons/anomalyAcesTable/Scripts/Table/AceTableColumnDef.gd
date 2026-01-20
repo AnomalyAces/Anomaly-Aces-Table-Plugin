@@ -35,6 +35,7 @@ var columnNode: Control
 var columnButtonType: AceTableConstants.ButtonType = AceTableConstants.ButtonType.COMBO
 var columnButtonIconUpdateWithState: bool = false
 var columnCheckBox: ColumnCheckBox
+var columnHasSelectAll: bool = false
 
 
 #Check if the columDef is valid

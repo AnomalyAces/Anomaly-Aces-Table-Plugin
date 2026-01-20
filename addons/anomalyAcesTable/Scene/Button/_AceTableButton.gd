@@ -26,7 +26,7 @@ var type: AceTableConstants.ButtonType = AceTableConstants.ButtonType.COMBO:
 				texture_rect.visible = true
 				label.visible = true
 			AceTableConstants.ButtonType.HEADER:
-				texture_rect.visible = true
+				texture_rect.visible = false
 				label.visible = true
 
 var is_right_icon: bool = false:
@@ -74,7 +74,7 @@ func _apply_button_settings():
 
 	if(type != AceTableConstants.ButtonType.HEADER && !colDef.columnImage.is_empty()):
 		texture_rect.texture = load(colDef.columnImage)
-		texture_rect.custom_minimum_size = colDef.columnImageSize
+		texture_rect.custom_minimum_size = colDef.columnImageSize if colDef.columnImageSize else Vector2i(64,64)
 	
 	if colDef.columnButtonType == AceTableConstants.ButtonType.HEADER:
 		label.text = colDef.columnName

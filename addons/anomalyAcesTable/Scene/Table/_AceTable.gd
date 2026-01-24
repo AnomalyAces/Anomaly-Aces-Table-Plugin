@@ -54,12 +54,15 @@ func _init(plg: AceTable, cfg: _AceTableConfig):
 	
 
 func set_data(dataArr:Array):
-	_table_data.clear()
+	_reset_table_data()
 	for dataIdx in dataArr.size():
 		var rowScene = _row_scene.instantiate()
 		rowScene.name = "Row"+str(dataIdx)
 		_rowContainer.add_child(rowScene)
+		# Set the row_id for tracking
+		dataArr[dataIdx]["row_id"]= dataIdx
 		var row = _AceTableRow.new(plugin, config, rowScene, dataArr[dataIdx])
+		row.row_selected.connect(_on_row_selected)
 		_table_data.append(row.data)
 
 	_sorted_table_data = _table_data.duplicate()
@@ -91,6 +94,7 @@ func _createColumnHeaders():
 				node_header = _ace_table_button_checkbox_scene.instantiate() as _AceTableButtonCheckbox
 				node_header.colDef = colDef.clone()
 				node_header.colDef.columnButtonType = AceTableConstants.ButtonType.HEADER
+				node_header.header_selected.connect(_on_row_header_selected)
 			else:
 				node_header = Label.new()
 				node_header.horizontal_alignment = AceTableConstants.Align.CENTER
@@ -150,10 +154,45 @@ func _update_sort_buttons(sort_col: String, sort_mode: AceTableConstants.ColumnS
 				header_node.set_button_icon(null)
 
 func _set_sorted_data(dataArr:Array):
-	_sorted_table_data.clear()
+	_reset_sorted_table_data()
 	for dataIdx in dataArr.size():
 		var rowScene = _row_scene.instantiate()
 		rowScene.name = "Row"+str(dataIdx)
 		_rowContainer.add_child(rowScene)
 		var row = _AceTableRow.new(plugin, config, rowScene, dataArr[dataIdx])
 		_sorted_table_data.append(row.data)
+
+
+func _reset_table_data():
+	# Clear existing data
+	_table_data.clear()
+	_clear_rows()
+
+func _reset_sorted_table_data():
+	# Clear existing sorted data
+	_sorted_table_data.clear()
+	_clear_rows()
+
+	
+func _clear_rows():
+	#Clear existing row nodes
+	### probably not the most effcient way to do this but it will be accurate
+	#Remove all children
+	for n in _rowContainer.get_children():
+		_rowContainer.remove_child(n)
+
+
+#Signal Handlers
+func _on_row_selected(row_data: Dictionary) -> void:
+	AceLog.printLog(["_AceTable: Row selected with data [%s]." % [row_data]], AceLog.LOG_LEVEL.DEBUG)
+	AceLog.printLog(["_AceTable: Current table data", _table_data], AceLog.LOG_LEVEL.DEBUG)
+
+func _on_row_header_selected(is_toggled: bool) -> void:
+	AceLog.printLog(["_AceTable: Header selected with value %s." % [is_toggled]], AceLog.LOG_LEVEL.DEBUG)
+
+	# Grab array as type _AceTableRow for better type handling
+	for row in _rowContainer.get_children():
+		AceLog.printLog(["_AceTable: Processing row %s for selection update." % [row]], AceLog.LOG_LEVEL.DEBUG)
+		if row is _AceTableRow:
+			AceLog.printLog(["_AceTable: Updating row %s selection state to %s" % [row, is_toggled]], AceLog.LOG_LEVEL.DEBUG)
+			row._table_update_selection(is_toggled)

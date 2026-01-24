@@ -6,7 +6,7 @@ const _default_checkbox_checked: Resource = preload("res://addons/anomalyAcesTab
 const _default_checkbox_unchecked: Resource = preload("res://addons/anomalyAcesTable/Icons/AceTableCheckboxUnchecked.svg")
 
 signal data_selected(colDef: AceTableColumnDef, data: Dictionary)
-signal header_data_selected(colDef: AceTableColumnDef)
+signal header_selected(is_toggled: bool)
 
 var colDef: AceTableColumnDef
 var data: Dictionary
@@ -85,8 +85,8 @@ func _on_toggled(is_toggled: bool) -> void:
 
 	data[colDef.columnId] = is_toggled
 	if colDef.columnButtonType == AceTableConstants.ButtonType.HEADER:
-		header_data_selected.emit(colDef)
-		AceLog.printLog(["Header Data Selected From Table -  ColDef: %s" % [colDef]], AceLog.LOG_LEVEL.DEBUG)
+		header_selected.emit(is_toggled)
+		AceLog.printLog(["Header Selection Toggled From Table -  Value: %s" % [is_toggled]], AceLog.LOG_LEVEL.DEBUG)
 	else:
 		data_selected.emit(colDef, data)
 		AceLog.printLog(["Data Selected From Table -  data: %s" % [data]], AceLog.LOG_LEVEL.DEBUG)
@@ -114,3 +114,7 @@ func _on_focus_entered() -> void:
 	if button_pressed:
 		return
 	_set_active_colors()
+
+
+func _to_string() -> String:
+	return "_AceTableButtonCheckbox - is_toggled: %s" % [pressed]

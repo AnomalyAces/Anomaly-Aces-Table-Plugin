@@ -5,10 +5,14 @@ const _ace_table_button_scene = preload("res://addons/anomalyAcesTable/Scene/But
 const _ace_table_checkbox_button_scene = preload("res://addons/anomalyAcesTable/Scene/Button/ButtonTypes/AceTableButtonCheckbox/_AceTableButtonCheckbox.tscn")
 
 signal pressed
+signal row_selected(row_data: Dictionary)
 
 var data: Dictionary
 
-func _init(plugin: AceTable, cfg: _AceTableConfig, rowScene: HBoxContainer, dt: Dictionary = {}):
+
+
+
+func initializeRow(plugin: AceTable, cfg: _AceTableConfig, rowScene: HBoxContainer, dt: Dictionary = {}):
 	if(plugin == null || cfg == null):
 		return
 	
@@ -29,11 +33,17 @@ func _init(plugin: AceTable, cfg: _AceTableConfig, rowScene: HBoxContainer, dt: 
 				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, image))
 			AceTableConstants.ColumnType.SELECTION:
 				var checkBox = _getSelectionButtonFromConfig(colDef, data)
+				checkBox.data_selected.connect(_on_row_selected)
 				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, checkBox))
 			_:
 				AceLog.printLog(["Column Def %s column type %s is unknown" % [colDef, AceTableConstants.ColumnType.keys()[colDef.columnType]]], AceLog.LOG_LEVEL.ERROR)
 	
-	
+func _table_update_selection(is_pressed: bool) -> void:
+	var checkBox: _AceTableButtonCheckbox =  AceArrayUtil.findFirst( get_children(), func(c): return c is _AceTableButtonCheckbox)
+	AceLog.printLog(["_AceTableRow: Updating checkbox %s selection state to %s" % [checkBox, is_pressed]], AceLog.LOG_LEVEL.DEBUG)
+	if checkBox != null:
+		checkBox.set_pressed_no_signal(is_pressed)
+
 func _getLabelFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Label:
 	var label: Label
 	if(colDef.columnNode != null):
@@ -90,3 +100,12 @@ func _getSelectionButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) ->
 		checkBox.colDef = colDef
 		checkBox.data = dt
 	return checkBox
+
+
+func _on_row_selected(colDef: AceTableColumnDef, data: Dictionary):
+	AceLog.printLog(["_AceTableRow: Row selected with data [%s]. Emitting row_selected signal." % [data]], AceLog.LOG_LEVEL.DEBUG)
+	row_selected.emit(data)
+
+
+func _to_string() -> String:
+	return "_AceTableRow - data: %s" % [data]

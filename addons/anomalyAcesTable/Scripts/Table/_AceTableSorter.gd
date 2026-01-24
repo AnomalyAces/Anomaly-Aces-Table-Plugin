@@ -27,12 +27,8 @@ func sort_row_by_column(table: _AceTable, column_name: String, sorting_type):
 			#No sorting
 			rows_data = table.get_rows()
 			
-	### Sort rows ###
-	var rows_parent: Node = table._rowContainer
-	### probably not the most effcient way to do this but it will be accurate
-	#Remove all children
-	for n in rows_parent.get_children():
-		rows_parent.remove_child(n)
+	### Clear rows ###
+	table._clear_rows()
 	
 	#Set the table data again
 	table._set_sorted_data(rows_data)

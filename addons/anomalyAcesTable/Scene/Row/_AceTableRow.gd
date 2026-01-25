@@ -3,6 +3,7 @@ class_name _AceTableRow extends HBoxContainer
 
 const _ace_table_button_scene = preload("res://addons/anomalyAcesTable/Scene/Button/_AceTableButton.tscn")
 const _ace_table_checkbox_button_scene = preload("res://addons/anomalyAcesTable/Scene/Button/ButtonTypes/AceTableButtonCheckbox/_AceTableButtonCheckbox.tscn")
+const _ace_table_text_scene: Resource = preload("res://addons/anomalyAcesTable/Scene/Text/_AceTableText.tscn")
 
 signal pressed
 signal row_selected(row_data: Dictionary)
@@ -23,7 +24,7 @@ func initializeRow(plugin: AceTable, cfg: _AceTableConfig, rowScene: HBoxContain
 		var cell: _AceTableCell = _AceTableCell.new()
 		match colDef.columnType:
 			AceTableConstants.ColumnType.LABEL:
-				var label: Label = _getLabelFromConfig(colDef,data)
+				var label: _AceTableText = _getLabelFromConfig(colDef,data)
 				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, label))
 			AceTableConstants.ColumnType.BUTTON:
 				var button: BaseButton = _getButtonFromConfig(colDef, data)
@@ -39,25 +40,23 @@ func initializeRow(plugin: AceTable, cfg: _AceTableConfig, rowScene: HBoxContain
 				AceLog.printLog(["Column Def %s column type %s is unknown" % [colDef, AceTableConstants.ColumnType.keys()[colDef.columnType]]], AceLog.LOG_LEVEL.ERROR)
 	
 func _table_update_selection(is_pressed: bool) -> void:
-	var checkBox: _AceTableButtonCheckbox =  AceArrayUtil.findFirst( get_children(), func(c): return c is _AceTableButtonCheckbox)
-	AceLog.printLog(["_AceTableRow: Updating checkbox %s selection state to %s" % [checkBox, is_pressed]], AceLog.LOG_LEVEL.DEBUG)
+	var checkBox: _AceTableButtonCheckbox =  AceArrayUtil.findFirst( find_children("*", "_AceTableButtonCheckbox", true, false), func(c): return c is _AceTableButtonCheckbox)
 	if checkBox != null:
+		AceLog.printLog(["_AceTableRow: data %s" % [data]], AceLog.LOG_LEVEL.DEBUG)
+		data["selected"] = is_pressed
 		checkBox.set_pressed_no_signal(is_pressed)
+		checkBox._set_active_colors() if is_pressed else checkBox._set_normal_colors()
 
-func _getLabelFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Label:
-	var label: Label
+func _getLabelFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> _AceTableText:
+	var label: _AceTableText
 	if(colDef.columnNode != null):
 		label = colDef.columnNode.duplicate()
 		label.name = colDef.columnId
 		label.text = dt[colDef.columnId]
 	else:
-		label = Label.new()
-		label.text = dt[colDef.columnId]
-		label.name = colDef.columnId
-		label.size_flags_horizontal = SIZE_EXPAND_FILL
-		label.size_flags_vertical = SIZE_EXPAND_FILL
-		label.horizontal_alignment = int(colDef.columnAlign) as HorizontalAlignment if colDef.columnAlign != -1 else int(AceTableConstants.Align.CENTER) as HorizontalAlignment
-		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label = _ace_table_text_scene.instantiate()
+		label.colDef = colDef
+		label.data = dt
 	
 	return label	
 

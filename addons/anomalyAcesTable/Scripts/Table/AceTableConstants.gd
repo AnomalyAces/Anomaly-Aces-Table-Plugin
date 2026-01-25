@@ -34,3 +34,11 @@ enum ButtonType {
 	COMBO,
 	HEADER
 }
+
+enum TextType {
+	ICON,
+	TEXT,
+	COMBO,
+	HEADER
+}
+

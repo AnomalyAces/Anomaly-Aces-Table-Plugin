@@ -34,6 +34,8 @@ var columnCallable: Callable
 var columnNode: Control
 var columnButtonType: AceTableConstants.ButtonType = AceTableConstants.ButtonType.COMBO
 var columnButtonIconUpdateWithState: bool = false
+var columnTextType: AceTableConstants.TextType = AceTableConstants.TextType.TEXT
+var columnTextIconUpdateWithState: bool = false
 var columnCheckBox: ColumnCheckBox
 var columnHasSelectAll: bool = false
 
@@ -74,6 +76,9 @@ func clone() -> AceTableColumnDef:
 	newColDef.columnCallable = columnCallable
 	newColDef.columnNode = columnNode
 	newColDef.columnButtonType = columnButtonType
+	newColDef.columnButtonIconUpdateWithState = columnButtonIconUpdateWithState
+	newColDef.columnTextType = columnTextType
+	newColDef.columnTextIconUpdateWithState = columnTextIconUpdateWithState
 	newColDef.columnSortButton = columnSortButton
 	newColDef.columnCheckBox = columnCheckBox
 	return newColDef
@@ -106,6 +111,8 @@ func _to_string() -> String:
 		"columnNode": str(columnNode),
 		"columnButtonType": AceTableConstants.ButtonType.keys()[columnButtonType],
 		"columnButtonIconUpdateWithState": columnButtonIconUpdateWithState,
+		"columnTextType": AceTableConstants.TextType.keys()[columnTextType],
+		"columnTextIconUpdateWithState": columnTextIconUpdateWithState,
 		"columnSortButton": {
 			"ascending": columnSortButton.ascending,
 			"descending": columnSortButton.descending

@@ -6,7 +6,6 @@ class_name _AceTableButton extends Button
 var container: HBoxContainer
 var texture_rect: TextureRect
 var label: Label
-var text_alignment: AceTableConstants.Align
 var colDef: AceTableColumnDef
 var data: Dictionary
 var type: AceTableConstants.ButtonType = AceTableConstants.ButtonType.COMBO:

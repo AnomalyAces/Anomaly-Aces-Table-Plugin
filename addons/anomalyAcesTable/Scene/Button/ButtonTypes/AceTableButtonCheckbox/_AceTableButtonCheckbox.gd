@@ -85,11 +85,11 @@ func _on_toggled(is_toggled: bool) -> void:
 
 	data[colDef.columnId] = is_toggled
 	if colDef.columnButtonType == AceTableConstants.ButtonType.HEADER:
-		header_selected.emit(is_toggled)
 		AceLog.printLog(["Header Selection Toggled From Table -  Value: %s" % [is_toggled]], AceLog.LOG_LEVEL.DEBUG)
+		header_selected.emit(is_toggled)
 	else:
-		data_selected.emit(colDef, data)
 		AceLog.printLog(["Data Selected From Table -  data: %s" % [data]], AceLog.LOG_LEVEL.DEBUG)
+		data_selected.emit(colDef, data)
 
 
 func _on_mouse_exited() -> void:
@@ -117,4 +117,4 @@ func _on_focus_entered() -> void:
 
 
 func _to_string() -> String:
-	return "_AceTableButtonCheckbox - is_toggled: %s" % [pressed]
+	return "_AceTableButtonCheckbox - is_toggled: %s" % [button_pressed]

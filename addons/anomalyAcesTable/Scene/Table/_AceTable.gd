@@ -6,6 +6,7 @@ const _row_scene: Resource = preload("res://addons/anomalyAcesTable/Scene/Row/_A
 const _table_scene: Resource = preload("res://addons/anomalyAcesTable/Scene/Table/_AceTable.tscn")
 const _ace_table_button_scene: Resource = preload("res://addons/anomalyAcesTable/Scene/Button/_AceTableButton.tscn")
 const _ace_table_button_checkbox_scene: Resource = preload("res://addons/anomalyAcesTable/Scene/Button/ButtonTypes/AceTableButtonCheckbox/_AceTableButtonCheckbox.tscn")
+const _ace_table_text_scene: Resource = preload("res://addons/anomalyAcesTable/Scene/Text/_AceTableText.tscn")
 const _default_sort_asc_icon: Resource = preload("res://addons/anomalyAcesTable/Icons/AceTableSortAsc.svg")
 const _default_sort_desc_icon: Resource = preload("res://addons/anomalyAcesTable/Icons/AceTableSortDesc.svg")
 
@@ -56,14 +57,14 @@ func _init(plg: AceTable, cfg: _AceTableConfig):
 func set_data(dataArr:Array):
 	_reset_table_data()
 	for dataIdx in dataArr.size():
-		var rowScene = _row_scene.instantiate()
+		var rowScene: _AceTableRow = _row_scene.instantiate()
+		AceLog.printLog(["Processing row with script %s" % [rowScene.get_script().get_global_name()]], AceLog.LOG_LEVEL.DEBUG)
 		rowScene.name = "Row"+str(dataIdx)
-		_rowContainer.add_child(rowScene)
-		# Set the row_id for tracking
 		dataArr[dataIdx]["row_id"]= dataIdx
-		var row = _AceTableRow.new(plugin, config, rowScene, dataArr[dataIdx])
-		row.row_selected.connect(_on_row_selected)
-		_table_data.append(row.data)
+		rowScene.initializeRow(plugin, config, rowScene, dataArr[dataIdx])
+		rowScene.row_selected.connect(_on_row_selected)
+		_table_data.append(rowScene.data)
+		_rowContainer.add_child(rowScene)
 
 	_sorted_table_data = _table_data.duplicate()
 
@@ -96,12 +97,9 @@ func _createColumnHeaders():
 				node_header.colDef.columnButtonType = AceTableConstants.ButtonType.HEADER
 				node_header.header_selected.connect(_on_row_header_selected)
 			else:
-				node_header = Label.new()
-				node_header.horizontal_alignment = AceTableConstants.Align.CENTER
-				node_header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-				node_header.text = colDef.columnName
-		
-		# node_header.text = colDef.columnName
+				node_header = _ace_table_text_scene.instantiate() as _AceTableText
+				node_header.colDef = colDef.clone()
+				node_header.colDef.columnTextType = AceTableConstants.TextType.HEADER
 		node_header.name = colDef.columnId
 		node_header.size_flags_horizontal = SIZE_EXPAND_FILL
 		# node_header.size_flags_vertical = SIZE_EXPAND_FILL
@@ -159,7 +157,8 @@ func _set_sorted_data(dataArr:Array):
 		var rowScene = _row_scene.instantiate()
 		rowScene.name = "Row"+str(dataIdx)
 		_rowContainer.add_child(rowScene)
-		var row = _AceTableRow.new(plugin, config, rowScene, dataArr[dataIdx])
+		var row = _AceTableRow.new()
+		row.initializeRow(plugin, config, rowScene, dataArr[dataIdx])
 		_sorted_table_data.append(row.data)
 
 
@@ -196,3 +195,8 @@ func _on_row_header_selected(is_toggled: bool) -> void:
 		if row is _AceTableRow:
 			AceLog.printLog(["_AceTable: Updating row %s selection state to %s" % [row, is_toggled]], AceLog.LOG_LEVEL.DEBUG)
 			row._table_update_selection(is_toggled)
+	
+
+	AceLog.printLog(["_AceTable: Data after selection", _table_data], AceLog.LOG_LEVEL.DEBUG)
+	
+

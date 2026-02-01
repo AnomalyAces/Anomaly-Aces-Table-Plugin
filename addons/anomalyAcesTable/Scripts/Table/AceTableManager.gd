@@ -14,6 +14,10 @@ static func createTable(plugin: AceTable, colDefs: Array[AceTableColumnDef], dat
 	return table
 	
 	
-static func setTableData(table: _AceTable, data: Array):
+static func setTableData(table: _AceTable, data: Array[Dictionary]) -> void:
 	if(data.size() > 0):
 		table.set_data(data)
+
+static func setTableDataFromObj(table: _AceTable, data: Array[Object]) -> void:
+	var dict_data: Array[Dictionary] = JSON.parse_string(AceSerialize.serialize_array(data))
+	setTableData(table, dict_data)

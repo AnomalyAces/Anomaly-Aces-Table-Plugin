@@ -39,6 +39,7 @@ enum TextType {
 	ICON,
 	TEXT,
 	COMBO,
+	LINK,
 	HEADER
 }
 

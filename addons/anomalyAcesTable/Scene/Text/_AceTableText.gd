@@ -3,7 +3,7 @@ class_name _AceTableText extends HBoxContainer
 
 
 var texture_rect: TextureRect
-var label: Label
+var label: RichTextLabel
 var colDef: AceTableColumnDef
 var data: Dictionary
 var type: AceTableConstants.TextType = AceTableConstants.TextType.TEXT:
@@ -14,6 +14,9 @@ var type: AceTableConstants.TextType = AceTableConstants.TextType.TEXT:
 				label.visible = false
 				texture_rect.visible = true
 			AceTableConstants.TextType.TEXT:
+				texture_rect.visible = false
+				label.visible = true
+			AceTableConstants.TextType.LINK:
 				texture_rect.visible = false
 				label.visible = true
 			AceTableConstants.TextType.COMBO:

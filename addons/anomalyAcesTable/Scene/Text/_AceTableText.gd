@@ -59,7 +59,15 @@ func _apply_text_settings():
 	if colDef.columnTextType == AceTableConstants.TextType.HEADER:
 		label.text = colDef.columnName
 	else:
-		label.text = data[colDef.columnId]
+		if colDef.columnTextType == AceTableConstants.TextType.LINK:
+			if _is_valid_text_link_data(data):
+				var link_data = data[colDef.columnId]
+				label.bbcode_text = "[url=%s]%s[/url]" % [link_data["link"], link_data["text"]]
+			else:
+				AceLog.printLog(["_AceTableText: Invalid text link data for column [%s]: %s. Should contain 'text' and 'link' keys. No link created." % [colDef.columnId, data[colDef.columnId]]], AceLog.LOG_LEVEL.ERROR)
+				label.text = data[colDef.columnId]
+		else:
+			label.text = data[colDef.columnId]
 
 	_set_normal_colors()
 
@@ -90,3 +98,18 @@ func _on_focus_exited() -> void:
 
 func _on_focus_entered() -> void:
 	_set_active_colors()
+
+
+
+func _on_label_meta_clicked(meta: String) -> void:
+	if colDef.columnCallable != null:
+		colDef.columnCallable.call(meta)
+
+
+func _is_valid_text_link_data(dt: Dictionary) -> bool:
+	if dt.has(colDef.columnId):
+		var link_data = dt[colDef.columnId]
+		if link_data is Dictionary:
+			if link_data.has("text") && link_data.has("link"):
+				return true
+	return false

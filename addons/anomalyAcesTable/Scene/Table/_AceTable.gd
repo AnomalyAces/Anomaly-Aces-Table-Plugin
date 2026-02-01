@@ -89,7 +89,7 @@ func _createColumnHeaders():
 			# node_header.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			# node_header.expand_icon = true
 			# node_header.add_theme_constant_override("icon_max_width", 20)
-			(node_header as Button).pressed.connect(_on_column_header_pressed_ascending.bind(node_header, colDef.columnId))
+			(node_header as Button).pressed.connect(_on_column_header_pressed_ascending.bind(node_header, node_header.colDef,node_header.colDef.columnId))
 		else:
 			if colDef.columnType == AceTableConstants.ColumnType.SELECTION && colDef.columnHasSelectAll:
 				node_header = _ace_table_button_checkbox_scene.instantiate() as _AceTableButtonCheckbox
@@ -107,27 +107,28 @@ func _createColumnHeaders():
 		node_header.set_theme(plugin.header_cell_theme)
 		_headerCellContainer.add_child(cell.compose_cell(plugin.header_cell_theme, node_header))
 
-func _on_column_header_pressed_ascending(node_header: _AceTableButton, col_key: String):
-	_sorter.sort_row_by_column(self, col_key, AceTableConstants.ColumnSort.SORT_ASCENDING)
+func _on_column_header_pressed_ascending(node_header: _AceTableButton, colDef: AceTableColumnDef, col_key: String):
+	_sorter.sort_row_by_column(self, colDef, col_key, AceTableConstants.ColumnSort.SORT_ASCENDING)
 	_update_sort_buttons(col_key, AceTableConstants.ColumnSort.SORT_ASCENDING)
 	
 	node_header.disconnect("pressed", _on_column_header_pressed_ascending)
-	node_header.connect("pressed", _on_column_header_pressed_descending.bind(node_header, col_key))
+	node_header.connect("pressed", _on_column_header_pressed_descending.bind(node_header, colDef, col_key))
 
-func _on_column_header_pressed_descending(node_header: _AceTableButton, col_key: String):
-	_sorter.sort_row_by_column(self, col_key, AceTableConstants.ColumnSort.SORT_DESCENDING)
+func _on_column_header_pressed_descending(node_header: _AceTableButton,  colDef: AceTableColumnDef, col_key: String):
+	_sorter.sort_row_by_column(self, colDef, col_key, AceTableConstants.ColumnSort.SORT_DESCENDING)
 	_update_sort_buttons(col_key, AceTableConstants.ColumnSort.SORT_DESCENDING)
 	
 	node_header.disconnect("pressed", _on_column_header_pressed_descending)
-	node_header.connect("pressed", _on_column_header_pressed_none.bind(node_header, col_key))
+	node_header.connect("pressed", _on_column_header_pressed_none.bind(node_header, colDef, col_key))
 
-func _on_column_header_pressed_none(node_header: _AceTableButton, col_key: String):
-	_sorter.sort_row_by_column(self, col_key, AceTableConstants.ColumnSort.NONE)
+func _on_column_header_pressed_none(node_header: _AceTableButton, colDef: AceTableColumnDef, col_key: String):
+	_sorter.sort_row_by_column(self, colDef, col_key, AceTableConstants.ColumnSort.NONE)
 	_update_sort_buttons(col_key, AceTableConstants.ColumnSort.NONE)
 	
 	node_header.disconnect("pressed", _on_column_header_pressed_none)
-	node_header.connect("pressed", _on_column_header_pressed_ascending.bind(node_header, col_key))
+	node_header.connect("pressed", _on_column_header_pressed_ascending.bind(node_header, colDef, col_key))
 
+	
 func _update_sort_buttons(sort_col: String, sort_mode: AceTableConstants.ColumnSort):
 	var colDef: AceTableColumnDef = AceArrayUtil.findFirst(config.columnDefs, func(cDef:AceTableColumnDef): return cDef.columnId == sort_col)
 	for header in _headerCellContainer.get_children():

@@ -51,6 +51,8 @@ func is_valid() -> bool:
 		warnings.append("Column Definition Input invalid")
 	if(columnType == AceTableConstants.ColumnType.BUTTON && columnCallable.is_null()):
 		warnings.append("[%s]: Column Type is Button but no Callable has been given" % columnId)
+	if(columnType == AceTableConstants.ColumnType.LABEL && columnTextType == AceTableConstants.TextType.LINK && columnCallable.is_null()):
+		warnings.append("[%s]: Column Type is Label, Text Type is Link but no Callable has been given" % columnId)
 	if(columnNode):
 		if(!_isValidNode()):
 			warnings.append("[%s]: Column Node %s' does not match Column Type %s" % [columnId, columnNode.name, AceTableConstants.ColumnType.keys()[columnType]])

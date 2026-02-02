@@ -25,17 +25,17 @@ func initializeRow(plugin: AceTable, cfg: _AceTableConfig, rowScene: HBoxContain
 		match colDef.columnType:
 			AceTableConstants.ColumnType.LABEL:
 				var label: _AceTableText = _getLabelFromConfig(colDef,data)
-				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, label))
+				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, label, colDef))
 			AceTableConstants.ColumnType.BUTTON:
 				var button: BaseButton = _getButtonFromConfig(colDef, data)
-				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, button))
+				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, button, colDef))
 			AceTableConstants.ColumnType.TEXTURE_RECT:
 				var image = _getTextureRectFromConfig(colDef, data)
-				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, image))
+				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, image, colDef))
 			AceTableConstants.ColumnType.SELECTION:
 				var checkBox = _getSelectionButtonFromConfig(colDef, data)
 				checkBox.data_selected.connect(_on_row_selected)
-				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, checkBox))
+				rowScene.add_child(cell.compose_cell(plugin.row_cell_theme, checkBox, colDef))
 			_:
 				AceLog.printLog(["Column Def %s column type %s is unknown" % [colDef, AceTableConstants.ColumnType.keys()[colDef.columnType]]], AceLog.LOG_LEVEL.ERROR)
 	
@@ -91,6 +91,7 @@ func _getTextureRectFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> Tex
 
 func _getSelectionButtonFromConfig(colDef: AceTableColumnDef, dt: Dictionary) -> _AceTableButtonCheckbox:
 	var checkBox: _AceTableButtonCheckbox
+	
 	if(colDef.columnNode != null):
 		checkBox = colDef.columnNode.duplicate()
 		checkBox.name = colDef.columnId

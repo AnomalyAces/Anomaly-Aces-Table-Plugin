@@ -56,6 +56,11 @@ func _apply_text_settings():
 	size_flags_horizontal = SIZE_EXPAND_FILL
 	type = colDef.columnTextType
 	is_right_icon = colDef.columnImageAlign == AceTableConstants.ImageAlign.RIGHT
+
+	if(type != AceTableConstants.TextType.HEADER && !colDef.columnImage.is_empty()):
+		texture_rect.texture = load(colDef.columnImage)
+		texture_rect.custom_minimum_size = colDef.columnImageSize if colDef.columnImageSize else Vector2i(64,64)
+
 	if colDef.columnTextType == AceTableConstants.TextType.HEADER:
 		label.text = colDef.columnName
 	else:

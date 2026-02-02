@@ -96,6 +96,7 @@ func _createColumnHeaders():
 				node_header.colDef = colDef.clone()
 				node_header.colDef.columnButtonType = AceTableConstants.ButtonType.HEADER
 				node_header.header_selected.connect(_on_row_header_selected)
+
 			else:
 				node_header = _ace_table_text_scene.instantiate() as _AceTableText
 				node_header.colDef = colDef.clone()
@@ -105,7 +106,7 @@ func _createColumnHeaders():
 		# node_header.size_flags_vertical = SIZE_EXPAND_FILL
 		
 		node_header.set_theme(plugin.header_cell_theme)
-		_headerCellContainer.add_child(cell.compose_cell(plugin.header_cell_theme, node_header))
+		_headerCellContainer.add_child(cell.compose_cell(plugin.header_cell_theme, node_header, colDef))
 
 func _on_column_header_pressed_ascending(node_header: _AceTableButton, colDef: AceTableColumnDef, col_key: String):
 	_sorter.sort_row_by_column(self, colDef, col_key, AceTableConstants.ColumnSort.SORT_ASCENDING)

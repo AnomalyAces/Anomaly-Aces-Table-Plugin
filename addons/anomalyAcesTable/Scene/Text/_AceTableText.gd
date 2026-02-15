@@ -66,8 +66,11 @@ func _apply_text_settings():
 	else:
 		if colDef.columnTextType == AceTableConstants.TextType.LINK:
 			if _is_valid_text_link_data(data):
-				var link_data = data[colDef.columnId]
-				label.bbcode_text = "[url=%s]%s[/url]" % [link_data["link"], link_data["text"]]
+				var link_data: _AceTableTextLink = _AceTableTextLink.from_dict(data[colDef.columnId])
+				if link_data.link.is_empty():
+					label.bbcode_text = "[color=%s]%s[/color]" % [link_data.color.to_html(), link_data.text]
+				else:
+					label.bbcode_text = "[url=%s][color=%s]%s[/color][/url]" % [link_data.link, link_data.color.to_html(), link_data.text]
 			else:
 				AceLog.printLog(["_AceTableText: Invalid text link data for column [%s]: %s. Should contain 'text' and 'link' keys. No link created." % [colDef.columnId, data[colDef.columnId]]], AceLog.LOG_LEVEL.ERROR)
 				label.text = data[colDef.columnId]

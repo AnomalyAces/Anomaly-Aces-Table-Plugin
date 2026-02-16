@@ -13,7 +13,7 @@ var data: Dictionary
 
 
 
-func initializeRow(plugin: AceTable, cfg: _AceTableConfig, rowScene: HBoxContainer, dt: Dictionary = {}):
+func initializeRow(plugin: AceTablePlugin, cfg: _AceTableConfig, rowScene: HBoxContainer, dt: Dictionary = {}):
 	if(plugin == null || cfg == null):
 		return
 	

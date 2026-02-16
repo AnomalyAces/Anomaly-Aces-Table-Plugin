@@ -1,5 +1,5 @@
 @tool
-class_name AceTable extends Control 
+class_name AceTablePlugin extends Control 
 
 var header_theme: Theme
 var header_cell_theme: Theme

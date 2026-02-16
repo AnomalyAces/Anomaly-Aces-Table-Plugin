@@ -20,35 +20,37 @@ var _sorter: _AceTableSorter = _AceTableSorter.new()
 var _table_data: Array[Dictionary]
 var _sorted_table_data: Array[Dictionary]
 
-var plugin: AceTable
+var plugin: AceTablePlugin
 var config: _AceTableConfig
 
 
 
 #constructor
-func _init(plg: AceTable, cfg: _AceTableConfig):
+func initializeTable(plg: AceTablePlugin, cfg: _AceTableConfig):
 	if(plg == null || cfg == null):
 		return
 	
 	plugin = plg
 	config = cfg
 	
-	plugin.add_child(_table_scene.instantiate())
+	var _table_node = _table_scene.instantiate()
+	plugin.add_child(_table_node)
+	_table_node.owner = plugin
 	
 	#Column Config
 	## Header Background
-	_headerPanel = plugin.get_node("Table/HeaderPanel")
+	_headerPanel = plugin.get_node("AceTable/HeaderPanel")
 	_headerPanel.set_theme(plugin.header_theme)
 	## Header Cells
-	_headerCellContainer = plugin.get_node("Table/HeaderPanel/MarginContainer/HeaderCellContainer")
+	_headerCellContainer = plugin.get_node("AceTable/HeaderPanel/MarginContainer/HeaderCellContainer")
 	_headerCellContainer.add_theme_constant_override("separation", plugin.cell_separation)
 	
 	#Row Config
 	#Theme Row Background
-	_rowPanel = plugin.get_node("Table/RowPanel")
+	_rowPanel = plugin.get_node("AceTable/RowPanel")
 	_rowPanel.set_theme(plugin.row_theme)
 	#Row Container
-	_rowContainer = plugin.get_node("Table/RowPanel/MarginContainer/ScrollContainer/RowContainer")
+	_rowContainer = plugin.get_node("AceTable/RowPanel/MarginContainer/ScrollContainer/RowContainer")
 	_rowContainer.add_theme_constant_override("separation", plugin.cell_separation)
 	
 	_createColumnHeaders()
@@ -201,4 +203,3 @@ func _on_row_header_selected(is_toggled: bool) -> void:
 
 	AceLog.printLog(["_AceTable: Data after selection", _table_data], AceLog.LOG_LEVEL.DEBUG)
 	
-

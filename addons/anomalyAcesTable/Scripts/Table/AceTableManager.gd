@@ -2,12 +2,27 @@
 class_name AceTableManager extends Node
 
 
-static func createTable(plugin: AceTable, colDefs: Array[AceTableColumnDef], data: Array[Dictionary] = []) -> _AceTable:
+static func createTable(plugin: AceTablePlugin, colDefs: Array[AceTableColumnDef], data: Array[Dictionary] = []) -> _AceTable:
+	var table: _AceTable
+	
 	if plugin == null:
-		printerr("AceTableManager not initialized, Please call AceTableManager.initialize()")
+		AceLog.printLog(["AceTableManager not initialized, Please call AceTableManager.initialize()"], AceLog.LOG_LEVEL.ERROR)
 		return null
+	
+	if plugin.get_children().size() > 0:
+		var _child_tbl: _AceTable = plugin.find_child("AceTable")
+		if _child_tbl != null:
+			AceLog.printLog(["AceTableManager already has a table, returning existing table. To have multiple tables, add multiple AceTable nodes to the scene tree. To update an existing table, call AceTableManager 'setTableData'* methods"], AceLog.LOG_LEVEL.ERROR)
+			table = _child_tbl
+			return table
+		else:
+			AceLog.printLog(["AceTableManager has children but no table found, creating new table. To avoid this message, ensure the table node root is named 'AceTable'"], AceLog.LOG_LEVEL.ERROR)
+			return null
+
+	
 	var tblConfig: _AceTableConfig = _AceTableConfig.new(colDefs)
-	var table: _AceTable = _AceTable.new(plugin, tblConfig)
+	table = _AceTable.new()
+	table.initializeTable(plugin, tblConfig)
 	
 	setTableData(table, data)
 		

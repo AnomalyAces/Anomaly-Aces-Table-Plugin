@@ -6,7 +6,7 @@ func _enter_tree():
 	# Initialization of the plugin goes here.
 	#Add Custom Types
 	add_custom_type(
-		"AceTable", 
+		"AceTablePlugin", 
 		"Control", 
 		preload("res://addons/anomalyAcesTable/Scripts/ace_table_properties.gd"),
 		preload("res://addons/anomalyAcesTable/AceTable.svg")
@@ -14,4 +14,4 @@ func _enter_tree():
 
 func _exit_tree():
 	#remove custom types
-	remove_custom_type("AceTable")
+	remove_custom_type("AceTablePlugin")

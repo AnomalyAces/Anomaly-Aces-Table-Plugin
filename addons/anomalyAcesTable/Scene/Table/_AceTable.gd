@@ -1,6 +1,9 @@
 @tool
 class_name _AceTable extends VBoxContainer
 
+#Signals
+signal row_selected(table_data: Array[Dictionary])
+
 #Scenes and Resources
 const _row_scene: Resource = preload("res://addons/anomalyAcesTable/Scene/Row/_AceTableRow.tscn")
 const _table_scene: Resource = preload("res://addons/anomalyAcesTable/Scene/Table/_AceTable.tscn")
@@ -189,6 +192,7 @@ func _clear_rows():
 func _on_row_selected(row_data: Dictionary) -> void:
 	AceLog.printLog(["_AceTable: Row selected with data [%s]." % [row_data]], AceLog.LOG_LEVEL.DEBUG)
 	AceLog.printLog(["_AceTable: Current table data", _table_data], AceLog.LOG_LEVEL.DEBUG)
+	row_selected.emit(_table_data)
 
 func _on_row_header_selected(is_toggled: bool) -> void:
 	AceLog.printLog(["_AceTable: Header selected with value %s." % [is_toggled]], AceLog.LOG_LEVEL.DEBUG)
@@ -202,4 +206,5 @@ func _on_row_header_selected(is_toggled: bool) -> void:
 	
 
 	AceLog.printLog(["_AceTable: Data after selection", _table_data], AceLog.LOG_LEVEL.DEBUG)
+	row_selected.emit(_table_data)
 	
